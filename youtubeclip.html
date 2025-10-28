@@ -17,7 +17,7 @@
     <main class="container">
         <div class="animation-text-container">
             <h1 class="animation-text">
-                <span class="word">copy</span>
+                <span class="word copy">copy</span>
                 <span class="word link">link</span>
                 <span class="word">then</span>
                 <span class="word enhance">enhance</span>
@@ -44,18 +44,22 @@
             <div class="conversion-options">
                 <label for="convert-select">Convert to:</label>
                 <select id="convert-select" name="format">
-                    <option value="mp3">MP3</option>
-                    <option value="mp4">MP4</option>
-                    <option value="mov">MOV</option>
-                    <option value="avi">AVI</option>
+                    <option value="mp4">MP4 Video</option>
+                    <option value="mp3">MP3 Audio</option>
+                    <option value="webm">WEBM Video</option>
+                    <option value="avi">AVI Video</option>
+                    <option value="wav">WAV Audio</option>
+                    <option value="opus">OPUS Audio</option>
                 </select>
 
                 <label for="quality-select">Change quality:</label>
                 <select id="quality-select" name="quality">
+                    <option value="360p">360p</option>
                     <option value="480p">480p</option>
-                    <option value="720p">720p</option>
-                    <option value="1080p">1080p (HD)</option>
-                    <option value="1440p" class="premium-option" disabled>1440p (2K) 👑</option>
+                    <option value="720p">720p (HD)</option>
+                    <option value="1080p">1080p (Full HD)</option>
+                    <option value="128kbps">128kbps (Audio) 👑</option>
+                    <option value="320kbps">320kbps (Audio) 👑</option>
                 </select>
                 <button class="download-btn">Download</button>
             </div>
@@ -63,7 +67,7 @@
     </main>
 
     <footer class="tutorial-section">
-        <h2>How to use the website.</h2>
+        <h2>How to use the youtube converter.</h2>
         <ul>
             <li>Copy the youtube video link you want.</li>
             <li>Wait for the loading clip animation to finish.</li>
