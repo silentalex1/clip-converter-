@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const navUser = document.getElementById('nav-user');
     const signinBtn = document.getElementById('signin-btn');
     const navbar = document.getElementById('navbar');
+    const formatSpinner = document.getElementById('format-spinner');
 
     const loggedInUser = localStorage.getItem('clipConverterUser');
     if (loggedInUser) {
@@ -20,10 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
     fileInput.addEventListener('change', (event) => {
         const file = event.target.files[0];
         if (!file) return;
-
         uploadContainer.style.display = 'none';
         loadingBarWrapper.style.display = 'block';
-
         let currentPercent = 0;
         const fileSizeMB = file.size / (1024 * 1024);
         const estimatedTime = Math.max(2000, fileSizeMB * 150); 
@@ -48,10 +47,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     downloadBtn.addEventListener('click', () => {
-        const formatSelect = document.getElementById('convert-select');
-        const selectedFormat = formatSelect.value;
+        const selectedFormat = document.getElementById('convert-select').value;
         const originalName = videoPreview.dataset.fileName || 'converted';
-
         if (!videoPreview.src) {
             alert("Please select a file first to begin.");
             return;
@@ -67,21 +64,14 @@ document.addEventListener('DOMContentLoaded', () => {
     let isDown = false;
     let startX;
     let scrollLeft;
-
     navbar.addEventListener('mousedown', (e) => {
         isDown = true;
         navbar.style.cursor = 'grabbing';
         startX = e.pageX - navbar.offsetLeft;
         scrollLeft = navbar.scrollLeft;
     });
-    navbar.addEventListener('mouseleave', () => {
-        isDown = false;
-        navbar.style.cursor = 'default';
-    });
-    navbar.addEventListener('mouseup', () => {
-        isDown = false;
-        navbar.style.cursor = 'default';
-    });
+    navbar.addEventListener('mouseleave', () => { isDown = false; navbar.style.cursor = 'default'; });
+    navbar.addEventListener('mouseup', () => { isDown = false; navbar.style.cursor = 'default'; });
     navbar.addEventListener('mousemove', (e) => {
         if (!isDown) return;
         e.preventDefault();
@@ -89,4 +79,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const walk = (x - startX) * 2; 
         navbar.scrollLeft = scrollLeft - walk;
     });
+
+    const formats = ['mov', 'avi', 'mkv', 'wav', 'flac'];
+    let formatIndex = 0;
+    setInterval(() => {
+        formatSpinner.classList.add('fade');
+        setTimeout(() => {
+            formatIndex = (formatIndex + 1) % formats.length;
+            formatSpinner.textContent = formats[formatIndex];
+            formatSpinner.classList.remove('fade');
+        }, 400);
+    }, 2000);
 });
