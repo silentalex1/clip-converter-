@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const fileInput = document.getElementById('file-upload');
-    const customFileUploadButton = document.querySelector('.custom-file-upload');
+    const uploadContainer = document.getElementById('file-upload-container');
     const loadingBarWrapper = document.querySelector('.loading-bar-wrapper');
     const loadingBar = document.querySelector('.loading-bar');
     const loadingPercent = document.querySelector('.loading-percent');
@@ -20,9 +20,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const file = event.target.files[0];
         if (!file) return;
 
-        customFileUploadButton.style.display = 'none';
+        uploadContainer.style.display = 'none';
+        conversionSection.style.display = 'flex';
         loadingBarWrapper.style.display = 'block';
         let currentPercent = 0;
+        
         const loadingInterval = setInterval(() => {
             currentPercent++;
             loadingBar.style.width = `${currentPercent}%`;
@@ -31,23 +33,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 clearInterval(loadingInterval);
                 setTimeout(() => {
                     loadingBarWrapper.style.display = 'none';
-                    conversionSection.style.display = 'flex';
+                    conversionSection.style.opacity = '1';
                     videoPreview.src = URL.createObjectURL(file);
+                    videoPreview.dataset.fileName = file.name.split('.').slice(0, -1).join('.');
                     videoPreview.play();
                 }, 500);
             }
-        }, 30);
+        }, 25);
     });
 
     downloadBtn.addEventListener('click', () => {
+        const formatSelect = document.getElementById('convert-select');
+        const selectedFormat = formatSelect.value;
+        const originalName = videoPreview.dataset.fileName || 'converted';
+
         if (!videoPreview.src) {
             alert("Please select a file first.");
             return;
         }
-        alert("Download functionality would be implemented on a real server. This is a demonstration.");
         const a = document.createElement('a');
         a.href = videoPreview.src;
-        a.download = `converted-${Date.now()}`;
+        a.download = `${originalName}.${selectedFormat}`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
