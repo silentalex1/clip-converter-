@@ -40,10 +40,7 @@ body, html {
     color: var(--text-color);
 }
 
-.logo sup {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-}
+.logo sup { font-size: 0.8rem; color: var(--text-muted); }
 
 .nav-user {
     font-size: 1.1rem;
@@ -54,7 +51,9 @@ body, html {
     transform: translateX(-50%);
 }
 
-.signin-btn {
+.nav-buttons { display: flex; align-items: center; gap: 15px; }
+
+.nav-btn, .signin-btn {
     padding: 8px 25px;
     background-color: var(--primary-color);
     color: var(--text-color);
@@ -65,7 +64,7 @@ body, html {
     white-space: nowrap;
 }
 
-.signin-btn:hover {
+.nav-btn:hover, .signin-btn:hover {
     background-color: #7B1FA2;
     transform: scale(1.05);
 }
@@ -80,55 +79,51 @@ body, html {
     text-align: center;
 }
 
+.animation-text-container {
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .animation-text {
     font-size: clamp(2.5rem, 8vw, 5rem);
     font-weight: 700;
-    margin-bottom: 50px;
+    margin: 0 0 50px 0;
 }
 
-.animation-text .anim-word {
-    opacity: 0;
-    transform: translateY(20px);
+.animation-text .word {
     display: inline-block;
-    animation: fadeInWord 0.6s forwards ease-out;
+    opacity: 0;
+    animation: fadeInWord 0.8s ease forwards;
 }
 
-.animation-text .anim-word:nth-child(1) { animation-delay: 0.2s; }
-.animation-text .anim-word:nth-child(2) { animation-delay: 0.4s; }
-.animation-text .anim-word:nth-child(3) { animation-delay: 0.6s; }
-.animation-text .anim-word:nth-child(4) { animation-delay: 0.8s; }
+.animation-text .word:nth-child(1) { animation-delay: 0.2s; }
+.animation-text .word:nth-child(2) { animation-delay: 0.5s; }
+.animation-text .word:nth-child(3) { animation-delay: 0.8s; }
+.animation-text .word:nth-child(4) { animation-delay: 1.1s; }
 
 @keyframes fadeInWord {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .animation-text .clip { color: var(--secondary-color); }
 .animation-text .enhance { color: var(--primary-color); }
 
-.file-upload-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.custom-file-upload {
-    cursor: pointer;
-    transition: transform 0.3s ease;
-}
-
+.file-upload-container { display: flex; flex-direction: column; align-items: center; }
+.custom-file-upload { cursor: pointer; transition: transform 0.3s ease; }
 .custom-file-upload:hover { transform: scale(1.1); }
 .custom-file-upload:hover svg { fill: var(--primary-color); }
 input[type="file"] { display: none; }
 
+.processing-container { width: clamp(280px, 80vw, 400px); margin-top: 30px; }
+
 .loading-bar-wrapper {
-    width: clamp(280px, 80vw, 400px);
+    width: 100%;
     height: 25px;
     background-color: #333;
     border-radius: 15px;
-    margin-top: 30px;
     position: relative;
     overflow: hidden;
     display: none;
