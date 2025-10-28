@@ -8,10 +8,6 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div style="display: none;">
-        <svg id="crown-icon-def" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256s256-114.6 256-256S397.4 0 256 0zM256 128c17.7 0 32 14.3 32 32c0 17.7-14.3 32-32 32s-32-14.3-32-32c14.3-32 32-32 32-32zm0 256c-53 0-96-43-96-96s43-96 96-96s96 43 96 96s-43 96-96 96z"/></svg>
-    </div>
-
     <nav class="navbar">
         <a href="https://discord.gg/yWErcPvkVt" target="_blank" class="logo">
             <u>Clip Converter</u> <sup>beta</sup>
@@ -21,128 +17,63 @@
     </nav>
 
     <div class="container">
-        <div class="animation-text">
-            <span class="clip">Clip</span> it <span class="enhance">improve</span> it.
-        </div>
-
-        <div class="file-upload-container" id="file-upload-container">
-            <label for="file-upload-video" class="custom-file-upload">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="80" height="80"><path d="M9.984 12.984v-6h4.031v6h2.906l-4.922 4.922-4.922-4.922h2.906zM18.984 9c0-2.203-1.781-3.984-3.984-3.984-1.641 0-3.047 1.031-3.609 2.484-0.188-0.047-0.375-0.047-0.563-0.047-1.406 0-2.578 0.844-3.141 2.016-1.547 0.188-2.672 1.547-2.672 3.094 0 1.734 1.406 3.141 3.141 3.141h10.266c1.359 0 2.484-1.125 2.484-2.484 0-1.266-0.938-2.297-2.156-2.438-0.234-1.266-1.266-2.25-2.531-2.25z" fill="#ffffff"></path></svg>
-            </label>
-        </div>
-
-        <div class="loading-bar-wrapper">
-            <div class="loading-bar"></div>
-            <span class="loading-percent">0%</span>
-        </div>
-        
-        <div class="media-processing-area">
-            <div class="media-tabs">
-                <button class="media-tab-link active" data-tab="video-tab">Video</button>
-                <button class="media-tab-link" data-tab="photo-tab">Photo Studio</button>
-                <button class="media-tab-link" data-tab="config-tab">Video Config</button>
+        <div class="main-content">
+            <div class="animation-text">
+                <span class="clip">Clip</span> it <span class="enhance">enhance</span> it.
             </div>
 
-            <div id="video-tab" class="media-tab-content active">
-                <div class="media-preview-column">
-                    <video id="video-preview" controls></video>
-                    <input id="file-upload-video" type="file" accept="video/*,.mov,.mp4,.avi,.mkv,.webm">
+            <div class="file-upload-container" id="file-upload-container">
+                <label for="file-upload-video" class="custom-file-upload">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="80" height="80"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z" fill="#ffffff"></path></svg>
+                </label>
+            </div>
+
+            <div class="loading-bar-wrapper">
+                <div class="loading-bar"></div>
+                <span class="loading-percent">0%</span>
+            </div>
+            
+            <div class="media-processing-area">
+                <div class="media-tabs">
+                    <button class="media-tab-link active" data-tab="video-tab">Video</button>
+                    <button class="media-tab-link" data-tab="photo-tab">Photo Studio</button>
+                    <button class="media-tab-link" data-tab="config-tab">Video Config</button>
                 </div>
-                <div class="media-options-column">
-                    <div class="option-group">
-                        <label for="convert-select">Convert Format</label>
-                        <select id="convert-select">
-                            <option value="mp4">MP4 (Universal)</option>
-                            <option value="mp3">MP3 (Audio Only)</option>
-                            <option value="mov">MOV (High Quality)</option>
-                            <option value="avi">AVI</option>
-                        </select>
+
+                <div id="video-tab" class="media-tab-content active">
+                    <div class="media-preview-wrapper">
+                        <video id="video-preview" controls></video>
+                        <input id="file-upload-video" type="file" accept="video/*,.mov,.mp4,.avi,.mkv">
                     </div>
-                    <div class="option-group">
-                        <label for="quality-select-video">Video Resolution</label>
-                        <select id="quality-select-video">
-                            <option value="720p">720p HD</option>
-                            <option value="1080p" selected>1080p Full HD</option>
-                            <option value="1440p" class="premium-option" disabled>1440p QHD 👑</option>
-                            <option value="4k" class="premium-option" disabled>4K UHD 👑</option>
-                            <option value="8k" class="premium-option" disabled>8K Ultra 👑</option>
-                        </select>
+                    <div class="media-options-grid">
+                        <div class="option-item">
+                            <label for="convert-select">Convert Format</label>
+                            <select id="convert-select">
+                                <option value="mp4">MP4 (Universal)</option>
+                                <option value="mp3">MP3 (Audio Only)</option>
+                                <option value="mov">MOV (High Quality)</option>
+                            </select>
+                        </div>
+                        <div class="option-item">
+                            <label for="quality-select-video">Video Resolution</label>
+                            <select id="quality-select-video">
+                                <option value="720p">720p HD</option>
+                                <option value="1080p" selected>1080p Full HD</option>
+                                <option value="1440p" class="premium-option" disabled>1440p QHD 👑</option>
+                                <option value="4k" class="premium-option" disabled>4K UHD 👑</option>
+                            </select>
+                        </div>
                     </div>
                     <button class="download-btn">Process Video</button>
                 </div>
-            </div>
 
-            <div id="photo-tab" class="media-tab-content">
-                <div class="media-preview-column">
-                    <div class="photo-frame">
-                        <img id="photo-preview" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25' viewBox='0 0 800 450'%3E%3Crect fill='%23333' width='800' height='450'/%3E%3Ctext fill='%23777' x='50%25' y='50%25' text-anchor='middle' font-family='sans-serif' font-size='24'%3EUpload a photo to begin%3C/text%3E%3C/svg%3E" alt="Preview">
-                    </div>
-                    <label for="file-upload-photo" class="upload-trigger-btn">Open Photo Library</label>
-                    <input id="file-upload-photo" type="file" accept="image/*">
+                <div id="photo-tab" class="media-tab-content">
                 </div>
-                <div class="media-options-column">
-                    <div class="option-group">
-                        <label>AI Scene Detection</label>
-                        <select id="photo-scene">
-                            <option value="auto">Auto-Detect (Recommended)</option>
-                            <option value="portrait">Portrait Studio</option>
-                            <option value="landscape">Landscape Vivid</option>
-                            <option value="night">Night Mode Pro</option>
-                        </select>
-                    </div>
-                    <div class="option-group">
-                        <label>Professional Grading</label>
-                        <select id="photo-grade">
-                            <option value="none">Natural</option>
-                            <option value="cinematic">Cinematic Warmth</option>
-                            <option value="matte">Classic Matte</option>
-                            <option value="hdr" class="premium-option" disabled>HDR Max 👑</option>
-                        </select>
-                    </div>
-                    <div class="option-group">
-                        <label>Output Quality</label>
-                        <select id="photo-quality">
-                            <option value="high">High Res JPG</option>
-                            <option value="lossless" class="premium-option" disabled>Lossless PNG 👑</option>
-                            <option value="raw" class="premium-option" disabled>RAW DNG 👑</option>
-                        </select>
-                    </div>
-                    <button class="download-btn">Export Photo</button>
-                </div>
-            </div>
-            
-            <div id="config-tab" class="media-tab-content locked-feature">
-                <div class="lock-overlay">
-                    <span class="lock-icon">👑</span>
-                    <h3>Premium Feature Only</h3>
-                    <p>Upgrade to unlock AI-powered video reconfiguration.</p>
-                    <a href="premiumlist.html" class="unlock-btn">See Premium Plans</a>
-                </div>
-                <div class="media-preview-column blur-content">
-                     <div class="video-placeholder"></div>
-                </div>
-                <div class="media-options-column blur-content">
-                    <div class="option-group">
-                        <label>Magic Prompt</label>
-                        <input type="text" placeholder="Describe your desired changes..." disabled>
-                    </div>
-                    <div class="option-group">
-                         <label>Render Quality</label>
-                         <select disabled><option>1080p</option></select>
-                    </div>
-                    <button class="download-btn" disabled>Generate</button>
+                
+                <div id="config-tab" class="media-tab-content">
                 </div>
             </div>
         </div>
-    </div>
-    
-    <div class="tutorial-section">
-        <h2>How to use the website.</h2>
-        <ul>
-            <li>Select the clip you want to use.</li>
-            <li>Wait for the loading clip animation to finish. <a href="premiumlist.html">Click here</a> for premium and faster loading.</li>
-            <li>After loading, you can change your video quality and format.</li>
-        </ul>
     </div>
     <script src="script.js"></script>
 </body>
