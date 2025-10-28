@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const downloadBtn = document.querySelector('.download-btn');
     const navUser = document.getElementById('nav-user');
     const signinBtn = document.getElementById('signin-btn');
+    const navbar = document.getElementById('navbar');
 
     const loggedInUser = localStorage.getItem('clipConverterUser');
     if (loggedInUser) {
@@ -20,58 +21,72 @@ document.addEventListener('DOMContentLoaded', () => {
         const file = event.target.files[0];
         if (!file) return;
 
-        const tempVideo = document.createElement('video');
-        tempVideo.preload = 'metadata';
-        tempVideo.src = URL.createObjectURL(file);
+        uploadContainer.style.display = 'none';
+        loadingBarWrapper.style.display = 'block';
 
-        tempVideo.onloadedmetadata = () => {
-            window.URL.revokeObjectURL(tempVideo.src);
-            const duration = tempVideo.duration;
-            const loadTime = Math.max(2000, Math.min(10000, duration * 100));
-            const intervalDelay = loadTime / 100;
+        let currentPercent = 0;
+        const fileSizeMB = file.size / (1024 * 1024);
+        const estimatedTime = Math.max(2000, fileSizeMB * 150); 
+        const intervalStepTime = estimatedTime / 100;
 
-            uploadContainer.style.display = 'none';
-            loadingBarWrapper.style.display = 'block';
-            conversionSection.style.display = 'flex';
-            
-            let currentPercent = 0;
-            const loadingInterval = setInterval(() => {
-                currentPercent++;
-                loadingBar.style.width = `${currentPercent}%`;
-                loadingPercent.textContent = `${currentPercent}%`;
-                if (currentPercent >= 100) {
-                    clearInterval(loadingInterval);
-                    setTimeout(() => {
-                        loadingBarWrapper.style.display = 'none';
-                        conversionSection.style.opacity = '1';
-                        videoPreview.src = URL.createObjectURL(file);
-                        videoPreview.dataset.fileName = file.name.split('.').slice(0, -1).join('.');
-                        videoPreview.play();
-                    }, 500);
-                }
-            }, intervalDelay);
-        };
+        const loadingInterval = setInterval(() => {
+            currentPercent++;
+            loadingBar.style.width = `${currentPercent}%`;
+            loadingPercent.textContent = `${currentPercent}%`;
+            if (currentPercent >= 100) {
+                clearInterval(loadingInterval);
+                setTimeout(() => {
+                    loadingBarWrapper.style.display = 'none';
+                    conversionSection.style.display = 'flex';
+                    conversionSection.style.opacity = '1';
+                    videoPreview.src = URL.createObjectURL(file);
+                    videoPreview.dataset.fileName = file.name.split('.').slice(0, -1).join('.');
+                    videoPreview.play();
+                }, 500);
+            }
+        }, intervalStepTime);
     });
 
     downloadBtn.addEventListener('click', () => {
         const formatSelect = document.getElementById('convert-select');
-        const qualitySelect = document.getElementById('quality-select');
         const selectedFormat = formatSelect.value;
-        const selectedQuality = qualitySelect.options[qualitySelect.selectedIndex].text;
         const originalName = videoPreview.dataset.fileName || 'converted';
 
         if (!videoPreview.src) {
-            alert("Please select a file first.");
+            alert("Please select a file first to begin.");
             return;
         }
-
-        alert(`Preparing your ${selectedQuality} file for download.`);
-
         const a = document.createElement('a');
         a.href = videoPreview.src;
         a.download = `${originalName}.${selectedFormat}`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
+    });
+
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+
+    navbar.addEventListener('mousedown', (e) => {
+        isDown = true;
+        navbar.style.cursor = 'grabbing';
+        startX = e.pageX - navbar.offsetLeft;
+        scrollLeft = navbar.scrollLeft;
+    });
+    navbar.addEventListener('mouseleave', () => {
+        isDown = false;
+        navbar.style.cursor = 'default';
+    });
+    navbar.addEventListener('mouseup', () => {
+        isDown = false;
+        navbar.style.cursor = 'default';
+    });
+    navbar.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - navbar.offsetLeft;
+        const walk = (x - startX) * 2; 
+        navbar.scrollLeft = scrollLeft - walk;
     });
 });
