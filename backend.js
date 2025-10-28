@@ -1,47 +1,45 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const userData = JSON.parse(localStorage.getItem('verificationUser'));
+    const userInfoDisplay = document.getElementById('user-info');
     const verifyForm = document.getElementById('verify-form');
     const codeInput = document.getElementById('code-input');
-    const verifyMessage = document.getElementById('verify-message');
 
-    if (!userData || !userData.email) {
-        window.location.href = '/accountcreation';
+    const pendingUserData = JSON.parse(sessionStorage.getItem('pendingVerification'));
+
+    if (!pendingUserData) {
+        userInfoDisplay.innerHTML = "No pending verification found. Please start over.";
+        verifyForm.style.display = 'none';
         return;
     }
 
-    document.getElementById('display-username').textContent = userData.username;
-    document.getElementById('display-email').textContent = userData.email;
+    userInfoDisplay.innerHTML = `
+        Username: <span>${pendingUserData.username}</span><br>
+        Email: <span>${pendingUserData.email}</span>
+    `;
 
-    verifyForm.addEventListener('submit', async (e) => {
+    verifyForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        const code = codeInput.value;
-        verifyMessage.textContent = 'Verifying...';
-        verifyMessage.style.color = '#fff';
+        const enteredCode = codeInput.value.toUpperCase();
 
-        try {
-            const response = await fetch('/api/verify', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: userData.email, code: code }),
-            });
+        if (enteredCode === pendingUserData.verificationCode) {
+            let db = JSON.parse(localStorage.getItem('clipConverterDB')) || [];
+            
+            const newUser = {
+                username: pendingUserData.username,
+                password: pendingUserData.password,
+                email: pendingUserData.email
+            };
 
-            const result = await response.json();
+            db.push(newUser);
+            localStorage.setItem('clipConverterDB', JSON.stringify(db));
+            localStorage.setItem('clipConverterUser', newUser.username);
 
-            if (response.ok) {
-                localStorage.setItem('loggedInUser', userData.username);
-                localStorage.removeItem('verificationUser');
-                verifyMessage.textContent = 'Success! Redirecting...';
-                verifyMessage.style.color = '#00ff7f';
-                setTimeout(() => {
-                    window.location.href = '/';
-                }, 1500);
-            } else {
-                verifyMessage.textContent = result.message || 'Invalid code. Please try again.';
-                verifyMessage.style.color = '#ff4d4d';
-            }
-        } catch (error) {
-            verifyMessage.textContent = 'Could not connect to the server.';
-            verifyMessage.style.color = '#ff4d4d';
+            sessionStorage.removeItem('pendingVerification');
+            
+            alert('Account verified successfully! You are now logged in.');
+            window.location.href = 'index.html';
+
+        } else {
+            alert('The verification code is incorrect. Please try again.');
         }
     });
 });
