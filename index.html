@@ -12,21 +12,21 @@
         <div class="logo">
             Clip Converter <sup>beta</sup>
         </div>
-        <a href="/login" class="signin-btn">Sign In</a>
+        <div id="nav-user-section">
+             <a href="/accountcreation" class="signin-btn">Sign In</a>
+        </div>
     </nav>
 
-    <div class="initial-background"></div>
-
     <div class="container">
-        <div class="animation-text">
-            <span class="clip">Clip</span> it <span class="enhance">enhance</span> it.
-        </div>
+        <h1 class="animation-text">
+            <span class="clip">Clip</span><span class="it-box">it</span> <span class="enhance">enhance</span><span class="it-box">it.</span>
+        </h1>
 
         <div class="file-upload-container">
             <label for="file-upload" class="custom-file-upload">
-                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 96 960 960" width="48"><path d="M440 856V536L216 760l-56-56 320-320 320 320-56 56-224-224v320h-80ZM160 376v-80h640v80H160Z"/></svg>
             </label>
-            <input id="file-upload" type="file" accept=".mov,.mp3,.mp4,video/*,audio/*">
+            <input id="file-upload" type="file" accept=".mov,.mp3,.mp4,.avi,.wmv,.flac,video/*,audio/*">
             <div class="loading-bar-wrapper">
                 <div class="loading-bar"></div>
                 <span class="loading-percent">0%</span>
@@ -43,14 +43,18 @@
                     <option value="mp3">mp3</option>
                     <option value="mp4">mp4</option>
                     <option value="mov">mov</option>
-                    <option value="movie">movie</option>
+                    <option value="avi">avi</option>
+                    <option value="wmv">wmv</option>
+                    <option value="flac">flac</option>
                 </select>
 
-                <label for="quality-select">Select the quality to change your video to:</label>
+                <label for="quality-select">Select the quality for your video:</label>
                 <select id="quality-select" name="quality">
-                    <option value="720q">720q</option>
-                    <option value="1040q">1040q</option>
-                    <option value="2040q" class="premium-option" disabled>2040q 👑</option>
+                    <option value="720p">720p</option>
+                    <option value="1080p">1080p</option>
+                    <option value="1440p">1440p</option>
+                    <option value="4K" class="premium-option" disabled>4K 👑</option>
+                    <option value="8K" class="premium-option" disabled>8K 👑</option>
                 </select>
                 <button class="download-btn">Download</button>
             </div>
@@ -62,7 +66,7 @@
         <ul>
             <li>Select the clip you want to use.</li>
             <li>Wait for the loading clip animation to finish. <a href="/premiumlist">Click here</a> for premium and faster loading.</li>
-            <li>After loading clip animation finish you can change your video quality, and change it to mp3, mp4, or whatever you want.</li>
+            <li>After the loading animation finishes you can change your video quality, and convert it to any format you want.</li>
         </ul>
         <div class="tutorial-visual">
             <p>tutorial - how to use the clip converter.</p>
@@ -72,4 +76,243 @@
 
     <script src="script.js"></script>
 </body>
-</html>
+</html>```
+
+**style.css**
+```css
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    font-family: 'Poppins', sans-serif;
+    background-color: #121212;
+    color: #ffffff;
+    overflow-x: hidden;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 5%;
+    background: #1a1a1a;
+    width: 90%;
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo {
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+.logo sup {
+    font-size: 0.8rem;
+    color: #bbbbbb;
+}
+
+#nav-user-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+}
+
+.signin-btn {
+    padding: 8px 20px;
+    background-color: #8A2BE2;
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 20px;
+    font-weight: 600;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-left: auto;
+}
+
+.signin-btn:hover {
+    background-color: #7B1FA2;
+    transform: scale(1.05);
+}
+
+.logged-in-user {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 80px 20px 20px 20px;
+    text-align: center;
+}
+
+.animation-text {
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    font-weight: 700;
+}
+
+.animation-text .clip { color: #00ff7f; }
+.animation-text .enhance { color: #8A2BE2; }
+.animation-text .it-box {
+    background-color: #007bff;
+    color: #fff;
+    padding: 0 10px;
+    border-radius: 8px;
+    margin: 0 5px;
+}
+
+.file-upload-container {
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.custom-file-upload svg {
+    width: 70px;
+    height: 70px;
+    fill: #ffffff;
+    cursor: pointer;
+    transition: transform 0.3s ease, fill 0.3s ease;
+}
+
+.custom-file-upload:hover svg {
+    transform: scale(1.15);
+    fill: #8A2BE2;
+}
+
+input[type="file"] { display: none; }
+
+.loading-bar-wrapper {
+    width: 90%;
+    max-width: 400px;
+    height: 25px;
+    background-color: #333;
+    border-radius: 15px;
+    margin-top: 30px;
+    position: relative;
+    overflow: hidden;
+    display: none;
+}
+
+.loading-bar {
+    width: 0%;
+    height: 100%;
+    border-radius: 15px;
+    background: linear-gradient(90deg, #00ff7f, #8A2BE2);
+    transition: width 0.3s ease-out;
+}
+
+.loading-percent {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.conversion-section {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    width: 100%;
+    max-width: 1100px;
+    margin-top: 50px;
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+
+.conversion-section.visible {
+    display: flex;
+    opacity: 1;
+}
+
+.video-preview-wrapper { width: 100%; max-width: 500px; }
+#video-preview { width: 100%; border-radius: 10px; }
+
+.conversion-options {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 400px;
+    text-align: left;
+}
+
+.conversion-options label { margin-top: 15px; font-weight: 600; }
+.conversion-options select {
+    padding: 10px;
+    margin-top: 8px;
+    border-radius: 8px;
+    border: none;
+    background-color: #2a2a2a;
+    color: #ffffff;
+    font-size: 1rem;
+}
+
+.premium-option { color: #aaa; }
+
+.download-btn {
+    margin-top: 25px;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 25px;
+    background-color: #8A2BE2;
+    color: #ffffff;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.download-btn:hover { background-color: #7B1FA2; transform: scale(1.05); }
+
+.tutorial-section {
+    padding: 50px 5%;
+    background-color: #1a1a1a;
+    margin-top: 100px;
+    text-align: center;
+}
+
+.tutorial-section h2 { font-size: 2rem; margin-bottom: 20px; }
+.tutorial-section ul {
+    list-style-type: '✓ ';
+    padding-left: 20px;
+    display: inline-block;
+    text-align: left;
+    margin-bottom: 30px;
+}
+
+.tutorial-section ul li { margin: 15px 0; }
+.tutorial-section ul li a { color: #00aaff; text-decoration: none; font-weight: 600; }
+.tutorial-visual { margin-top: 20px; }
+.visual-animation-bar {
+    height: 100px;
+    max-width: 800px;
+    margin: 20px auto;
+    background: linear-gradient(90deg, #00ff7f, #8A2BE2);
+    background-size: 200% 200%;
+    border-radius: 10px;
+    animation: gradient-animation 4s ease infinite;
+}
+
+@keyframes gradient-animation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@media (min-width: 768px) {
+    .conversion-section {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+}
