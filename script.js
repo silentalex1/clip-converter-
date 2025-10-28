@@ -1,7 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const initialBackground = document.querySelector('.initial-background');
-    const animationText = document.querySelector('.animation-text');
-    const fileUploadContainer = document.querySelector('.file-upload-container');
     const fileInput = document.getElementById('file-upload');
     const customFileUploadButton = document.querySelector('.custom-file-upload');
     const loadingBarWrapper = document.querySelector('.loading-bar-wrapper');
@@ -10,14 +7,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const conversionSection = document.querySelector('.conversion-section');
     const videoPreview = document.getElementById('video-preview');
     const downloadBtn = document.querySelector('.download-btn');
+    const navUserSection = document.getElementById('nav-user-section');
 
-    setTimeout(() => {
-        initialBackground.classList.add('slide-up');
-    }, 2800);
-
-    setTimeout(() => {
-        fileUploadContainer.classList.add('visible');
-    }, 3200);
+    const loggedInUser = localStorage.getItem('loggedInUser');
+    if (loggedInUser) {
+        navUserSection.innerHTML = `<span class="logged-in-user">${loggedInUser}</span>`;
+    }
 
     fileInput.addEventListener('change', (event) => {
         const file = event.target.files[0];
@@ -45,16 +40,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     downloadBtn.addEventListener('click', () => {
-        const formatSelect = document.getElementById('convert-select');
-        const qualitySelect = document.getElementById('quality-select');
-        const selectedFormat = formatSelect.value;
-        const selectedQuality = qualitySelect.value;
-        
         if (videoPreview.src) {
-            alert(`Preparing to download your file as ${selectedFormat} in ${selectedQuality}.`);
             const a = document.createElement('a');
             a.href = videoPreview.src;
-            a.download = `converted-video.${selectedFormat}`;
+            const selectedFormat = document.getElementById('convert-select').value;
+            a.download = `converted-file.${selectedFormat}`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
