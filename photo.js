@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const conversionSection = document.querySelector('.conversion-section');
     const downloadBtn = document.getElementById('download-btn');
     const slider = document.getElementById('slider');
-    const afterImageContainer = document.querySelector('.after-image-container');
+    const afterFigure = document.getElementById('after-figure');
     const beforeImage = document.getElementById('before-image');
     const afterImage = document.getElementById('after-image');
     const canvas = document.getElementById('canvas');
@@ -34,9 +34,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     setTimeout(() => {
                         loadingBarWrapper.style.display = 'none';
                         conversionSection.style.display = 'flex';
-                        requestAnimationFrame(() => {
-                             conversionSection.style.opacity = '1';
-                        });
+                        setTimeout(() => {
+                            conversionSection.style.opacity = '1';
+                        }, 50);
                     }, 500);
                 };
                 reader.readAsDataURL(file);
@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     slider.addEventListener('input', (e) => {
-        afterImageContainer.style.width = `${e.target.value}%`;
+        afterFigure.style.width = `${e.target.value}%`;
     });
 
     downloadBtn.addEventListener('click', () => {
@@ -58,8 +58,8 @@ document.addEventListener('DOMContentLoaded', () => {
         img.crossOrigin = 'anonymous';
         img.onload = () => {
             const context = canvas.getContext('2d');
-            canvas.width = img.width;
-            canvas.height = img.height;
+            canvas.width = img.naturalWidth;
+            canvas.height = img.naturalHeight;
             context.filter = 'contrast(110%) saturate(120%) brightness(105%)';
             context.drawImage(img, 0, 0);
 
