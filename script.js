@@ -7,11 +7,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const conversionSection = document.querySelector('.conversion-section');
     const videoPreview = document.getElementById('video-preview');
     const downloadBtn = document.querySelector('.download-btn');
-    const navUserSection = document.getElementById('nav-user-section');
+    const navUserDisplay = document.getElementById('nav-user-display');
+    const navAuthSection = document.getElementById('nav-auth-section');
 
     const loggedInUser = localStorage.getItem('loggedInUser');
     if (loggedInUser) {
-        navUserSection.innerHTML = `<span class="logged-in-user">${loggedInUser}</span>`;
+        navUserDisplay.textContent = loggedInUser;
+        navAuthSection.innerHTML = '';
     }
 
     fileInput.addEventListener('change', (event) => {
