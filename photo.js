@@ -32,11 +32,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     beforeImage.src = imageUrl;
                     afterImage.src = imageUrl;
                     setTimeout(() => {
-                        loadingBarWrapper.style.display = 'none';
-                        conversionSection.style.display = 'flex';
-                        setTimeout(() => {
-                            conversionSection.style.opacity = '1';
-                        }, 50);
+                        if (loadingBarWrapper) {
+                            loadingBarWrapper.style.display = 'none';
+                        }
+                        if (conversionSection) {
+                            conversionSection.style.display = 'flex';
+                            setTimeout(() => {
+                                conversionSection.style.opacity = '1';
+                            }, 50);
+                        }
                     }, 500);
                 };
                 reader.readAsDataURL(file);
@@ -44,30 +48,36 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 20);
     });
     
-    slider.addEventListener('input', (e) => {
-        afterFigure.style.width = `${e.target.value}%`;
-    });
+    if (slider && afterFigure) {
+        slider.addEventListener('input', (e) => {
+            afterFigure.style.width = `${e.target.value}%`;
+        });
+    }
 
-    downloadBtn.addEventListener('click', () => {
-        if (!afterImage.src) {
-            alert("Please select a photo first.");
-            return;
-        }
+    if (downloadBtn) {
+        downloadBtn.addEventListener('click', () => {
+            if (!afterImage.src || afterImage.src.endsWith('/')) {
+                alert("Please select a photo first.");
+                return;
+            }
 
-        const img = new Image();
-        img.crossOrigin = 'anonymous';
-        img.onload = () => {
-            const context = canvas.getContext('2d');
-            canvas.width = img.naturalWidth;
-            canvas.height = img.naturalHeight;
-            context.filter = 'contrast(110%) saturate(120%) brightness(105%)';
-            context.drawImage(img, 0, 0);
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.onload = () => {
+                if (canvas) {
+                    const context = canvas.getContext('2d');
+                    canvas.width = img.naturalWidth;
+                    canvas.height = img.naturalHeight;
+                    context.filter = 'contrast(110%) saturate(120%) brightness(105%)';
+                    context.drawImage(img, 0, 0);
 
-            const link = document.createElement('a');
-            link.download = 'enhanced-photo.png';
-            link.href = canvas.toDataURL('image/png');
-            link.click();
-        };
-        img.src = afterImage.src;
-    });
+                    const link = document.createElement('a');
+                    link.download = 'enhanced-photo.png';
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                }
+            };
+            img.src = afterImage.src;
+        });
+    }
 });
