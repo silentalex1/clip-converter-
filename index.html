@@ -8,6 +8,12 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="icon-definitions" style="display: none;">
+        <svg id="crown-icon" viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+            <path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .55-.45 1-1 1H6c-.55 0-1-.45-1-1v-1h14v1z"></path>
+        </svg>
+    </div>
+
     <nav class="navbar">
         <a href="https://discord.gg/yWErcPvkVt" target="_blank" class="logo">
             <u>Clip Converter</u> <sup>beta</sup>
@@ -21,41 +27,71 @@
             <span class="clip">Clip</span>&nbsp;it&nbsp;<span class="enhance">enhance</span>&nbsp;it.
         </div>
 
-        <div class="file-upload-container">
+        <div class="file-upload-container" id="main-uploader">
             <label for="file-upload" class="custom-file-upload">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="80" height="80"><path d="M9.984 12.984v-6h4.031v6h2.906l-4.922 4.922-4.922-4.922h2.906zM18.984 9c0-2.203-1.781-3.984-3.984-3.984-1.641 0-3.047 1.031-3.609 2.484-0.188-0.047-0.375-0.047-0.563-0.047-1.406 0-2.578 0.844-3.141 2.016-1.547 0.188-2.672 1.547-2.672 3.094 0 1.734 1.406 3.141 3.141 3.141h10.266c1.359 0 2.484-1.125 2.484-2.484 0-1.266-0.938-2.297-2.156-2.438-0.234-1.266-1.266-2.25-2.531-2.25z" fill="#ffffff"></path></svg>
+                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="80" height="80"><path d="M9.984 12.984v-6h4.031v6h2.906l-4.922 4.922-4.922-4.922h2.906zM18.984 9c0-2.203-1.781-3.984-3.984-3.984-1.641 0-3.047 1.031-3.609 2.484-0.188-0.047-0.375-0.047-0.563-0.047-1.406 0-2.578 0.844-3.141 2.016-1.547 0.188-2.672 1.547-2.672 3.094 0 1.734 1.406 3.141 3.141 3.141h10.266c1.359 0 2.484-1.125 2.484-2.484 0-1.266-0.938-2.297-2.156-2.438-0.234-1.266-1.266-2.25-2.531-2.25z" fill="#ffffff"></path></svg>
             </label>
-            <input id="file-upload" type="file" accept=".mov,.mp3,.mp4,.avi,.mkv,video/*,audio/*">
+            <input id="file-upload" type="file" accept="video/*,image/*">
             <div class="loading-bar-wrapper">
                 <div class="loading-bar"></div>
                 <span class="loading-percent">0%</span>
             </div>
         </div>
 
-        <div class="conversion-section">
-            <div class="video-preview-wrapper">
-                <video id="video-preview" controls></video>
+        <div class="editor-container">
+            <div class="editor-tabs">
+                <button class="editor-tab-link active" data-tab="video-editor">Video</button>
+                <button class="editor-tab-link" data-tab="photo-editor">Photo</button>
+                <button class="editor-tab-link" data-tab="config-editor">Video Config</button>
             </div>
-            <div class="conversion-options">
-                <label for="convert-select">Convert to:</label>
-                <select id="convert-select" name="format">
-                    <option value="mp3">MP3</option>
-                    <option value="mp4">MP4</option>
-                    <option value="mov">MOV</option>
-                    <option value="avi">AVI</option>
-                    <option value="mkv">MKV</option>
-                    <option value="wav">WAV</option>
-                </select>
 
-                <label for="quality-select">Change quality:</label>
-                <select id="quality-select" name="quality">
-                    <option value="480p">480p</option>
-                    <option value="720p">720p</option>
-                    <option value="1080p">1080p</option>
-                    <option value="1440p" class="premium-option" disabled>1440p 👑</option>
-                    <option value="4k" class="premium-option" disabled>4K 👑</option>
-                </select>
-                <button class="download-btn">Download</button>
+            <div id="video-editor" class="editor-tab-content active">
+                <div class="video-preview-wrapper"><video id="video-preview" controls></video></div>
+                <div class="conversion-options">
+                    <label for="convert-select">Convert to:</label>
+                    <select id="convert-select">
+                        <option value="mp4">MP4</option><option value="mov">MOV</option><option value="avi">AVI</option><option value="mkv">MKV</option><option value="mp3">MP3</option><option value="wav">WAV</option>
+                    </select>
+                    <label for="quality-select">Change quality:</label>
+                    <select id="quality-select">
+                        <option value="480p">480p</option><option value="720p">720p</option><option value="1080p">1080p</option>
+                        <option value="1440p" class="premium-option" disabled>1440p</option>
+                        <option value="4k" class="premium-option" disabled>4K</option>
+                        <option value="8k" class="premium-option" disabled>8K</option>
+                        <option value="10k" class="premium-option" disabled>10K (best)</option>
+                    </select>
+                    <button class="download-btn">Download</button>
+                </div>
+            </div>
+
+            <div id="photo-editor" class="editor-tab-content">
+                <div class="photo-preview-wrapper"><img id="photo-preview" src="" alt="Photo Preview"></div>
+                <div class="conversion-options">
+                    <label for="photo-quality-select">Change photo quality:</label>
+                    <select id="photo-quality-select">
+                        <option value="480p">480p</option><option value="720p">720p</option><option value="1080p">1080p</option>
+                        <option value="1440p" class="premium-option" disabled>1440p</option>
+                         <option value="4k" class="premium-option" disabled>4K</option>
+                    </select>
+                    <button class="download-btn">Download</button>
+                </div>
+            </div>
+            
+            <div id="config-editor" class="editor-tab-content">
+                <div class="premium-blur-overlay">
+                    <div class="premium-lock-content">
+                        <svg class="crown-icon-large" viewBox="0 0 24 24"><use href="#crown-icon"></use></svg>
+                        <span>Premium Feature Only</span>
+                    </div>
+                </div>
+                <div class="config-content-wrapper">
+                    <div class="video-preview-wrapper"><video id="config-video-preview" controls></video></div>
+                    <div class="conversion-options">
+                        <label for="prompt-input">Enter your prompt to change your video:</label>
+                        <input type="text" id="prompt-input" placeholder="e.g., make the sky purple">
+                        <button class="download-btn">Generate & Download</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -64,7 +100,7 @@
         <h2>How to use the website.</h2>
         <ul>
             <li>Select the clip you want to use.</li>
-            <li>Wait for the loading clip animation to finish. <a href="/premiumlist">Click here</a> for premium and faster loading.</li>
+            <li>Wait for the loading process to finish. <a href="premiumlist.html">Click here</a> for premium and faster loading.</li>
             <li>After loading, you can change your video quality and format.</li>
         </ul>
         <div class="tutorial-visual">
@@ -72,7 +108,6 @@
             <div class="visual-animation-bar"></div>
         </div>
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>
