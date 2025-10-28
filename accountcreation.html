@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account - Clip Converter</title>
+    <link rel="stylesheet" href="accountreg.css">
+</head>
+<body>
+    <div class="account-container">
+        <div class="tabs">
+            <button class="tab-link active" data-tab="login">Login</button>
+            <button class="tab-link" data-tab="register">Create Account</button>
+        </div>
+
+        <div id="login" class="tab-content active">
+            <form id="login-form">
+                <div class="tooltip-container">
+                    <span class="tooltip-trigger">?</span>
+                    <div class="tooltip-text">If you do NOT have an account please create one.</div>
+                </div>
+                <input type="text" placeholder="Enter your username" required>
+                <input type="password" placeholder="Enter your password" required>
+                <button type="submit">Login</button>
+            </form>
+        </div>
+
+        <div id="register" class="tab-content">
+            <form id="register-form">
+                <input type="text" id="reg-username" placeholder="Enter your username" required>
+                <input type="password" id="reg-password" placeholder="Enter your password" required>
+                <input type="email" id="reg-email" placeholder="Enter your email" required>
+                <button type="submit">Create Account</button>
+            </form>
+        </div>
+    </div>
+    <script src="accountsystem.js"></script>
+</body>
+</html>
