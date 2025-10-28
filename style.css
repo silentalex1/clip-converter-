@@ -22,14 +22,11 @@ body, html {
     z-index: 1000;
 }
 
-.logo-link {
-    text-decoration: none;
-    color: inherit;
-}
-
 .logo {
     font-size: 1.6rem;
     font-weight: 700;
+    text-decoration: none;
+    color: #ffffff;
 }
 
 .logo sup {
@@ -37,19 +34,16 @@ body, html {
     color: #bbbbbb;
 }
 
-.nav-center {
-    flex-grow: 1;
-    text-align: center;
-}
-
-.logged-in-user {
-    font-size: 1.2rem;
+.nav-user {
+    font-size: 1.1rem;
     font-weight: 600;
-    color: #ffffff;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .signin-btn {
-    padding: 8px 20px;
+    padding: 8px 25px;
     background-color: #8A2BE2;
     color: #ffffff;
     text-decoration: none;
@@ -73,46 +67,32 @@ body, html {
     text-align: center;
 }
 
-.main-headline {
+.animation-text {
     font-size: clamp(2.5rem, 8vw, 5rem);
     font-weight: 700;
+    margin-bottom: 40px;
 }
 
-.main-headline .clip {
-    color: #00ff7f;
-    margin-right: 0.25em;
-}
-
-.main-headline .enhance {
-    color: #8A2BE2;
-    margin-left: 0.25em;
-}
+.animation-text .clip { color: #00ff7f; }
+.animation-text .enhance { color: #8A2BE2; }
 
 .file-upload-container {
-    margin-top: 40px;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.custom-file-upload svg {
-    width: 70px;
-    height: 70px;
-    fill: #ffffff;
+.custom-file-upload {
     cursor: pointer;
-    transition: transform 0.3s ease, fill 0.3s ease;
+    transition: transform 0.3s ease;
 }
 
-.custom-file-upload:hover svg {
-    transform: scale(1.15);
-    fill: #8A2BE2;
-}
-
+.custom-file-upload:hover { transform: scale(1.1); }
+.custom-file-upload:hover svg { fill: #8A2BE2; }
 input[type="file"] { display: none; }
 
 .loading-bar-wrapper {
-    width: 90%;
-    max-width: 400px;
+    width: clamp(280px, 80vw, 400px);
     height: 25px;
     background-color: #333;
     border-radius: 15px;
@@ -144,20 +124,13 @@ input[type="file"] { display: none; }
     flex-direction: column;
     align-items: center;
     gap: 30px;
-    width: 100%;
+    width: 95%;
     max-width: 1100px;
     margin-top: 50px;
-    opacity: 0;
-    transition: opacity 1s ease;
-}
-
-.conversion-section.visible {
-    display: flex;
-    opacity: 1;
 }
 
 .video-preview-wrapper { width: 100%; max-width: 500px; }
-#video-preview { width: 100%; border-radius: 10px; }
+#video-preview { width: 100%; border-radius: 10px; background-color: #000; }
 
 .conversion-options {
     display: flex;
@@ -169,15 +142,15 @@ input[type="file"] { display: none; }
 
 .conversion-options label { margin-top: 15px; font-weight: 600; }
 .conversion-options select {
-    padding: 10px;
+    padding: 12px;
     margin-top: 8px;
     border-radius: 8px;
     border: none;
     background-color: #2a2a2a;
     color: #ffffff;
     font-size: 1rem;
+    width: 100%;
 }
-
 .premium-option { color: #aaa; }
 
 .download-btn {
@@ -192,16 +165,13 @@ input[type="file"] { display: none; }
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
-
 .download-btn:hover { background-color: #7B1FA2; transform: scale(1.05); }
 
 .tutorial-section {
     padding: 50px 5%;
     background-color: #1a1a1a;
-    margin-top: 100px;
     text-align: center;
 }
-
 .tutorial-section h2 { font-size: 2rem; margin-bottom: 20px; }
 .tutorial-section ul {
     list-style-type: '✓ ';
@@ -210,9 +180,9 @@ input[type="file"] { display: none; }
     text-align: left;
     margin-bottom: 30px;
 }
-
 .tutorial-section ul li { margin: 15px 0; }
 .tutorial-section ul li a { color: #00aaff; text-decoration: none; font-weight: 600; }
+
 .tutorial-visual { margin-top: 20px; }
 .visual-animation-bar {
     height: 100px;
@@ -223,7 +193,6 @@ input[type="file"] { display: none; }
     border-radius: 10px;
     animation: gradient-animation 4s ease infinite;
 }
-
 @keyframes gradient-animation {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
@@ -231,23 +200,5 @@ input[type="file"] { display: none; }
 }
 
 @media (min-width: 768px) {
-    .conversion-section {
-        flex-direction: row;
-        align-items: flex-start;
-    }
-}
-
-@media (max-width: 600px) {
-    .navbar {
-        flex-direction: column;
-        padding: 10px;
-        width: calc(100% - 20px);
-    }
-    .nav-center {
-        order: -1;
-        margin-bottom: 10px;
-    }
-    .container {
-        padding-top: 120px;
-    }
+    .conversion-section { flex-direction: row; align-items: flex-start; }
 }
