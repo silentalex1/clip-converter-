@@ -7,20 +7,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const conversionSection = document.querySelector('.conversion-section');
     const videoPreview = document.getElementById('video-preview');
     const downloadBtn = document.querySelector('.download-btn');
-    const navUserDisplay = document.getElementById('nav-user-display');
-    const navAuthSection = document.getElementById('nav-auth-section');
+    const navUser = document.getElementById('nav-user');
+    const signinBtn = document.getElementById('signin-btn');
 
-    const loggedInUser = localStorage.getItem('loggedInUser');
+    const loggedInUser = localStorage.getItem('clipConverterUser');
     if (loggedInUser) {
-        navUserDisplay.textContent = loggedInUser;
-        navAuthSection.innerHTML = '';
+        navUser.textContent = loggedInUser;
+        signinBtn.style.display = 'none';
     }
 
     fileInput.addEventListener('change', (event) => {
         const file = event.target.files[0];
-        if (!file) {
-            return;
-        }
+        if (!file) return;
 
         customFileUploadButton.style.display = 'none';
         loadingBarWrapper.style.display = 'block';
@@ -33,25 +31,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 clearInterval(loadingInterval);
                 setTimeout(() => {
                     loadingBarWrapper.style.display = 'none';
-                    const videoURL = URL.createObjectURL(file);
-                    videoPreview.src = videoURL;
-                    conversionSection.classList.add('visible');
+                    conversionSection.style.display = 'flex';
+                    videoPreview.src = URL.createObjectURL(file);
+                    videoPreview.play();
                 }, 500);
             }
         }, 30);
     });
 
     downloadBtn.addEventListener('click', () => {
-        if (videoPreview.src) {
-            const a = document.createElement('a');
-            a.href = videoPreview.src;
-            const selectedFormat = document.getElementById('convert-select').value;
-            a.download = `converted-file.${selectedFormat}`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-        } else {
+        if (!videoPreview.src) {
             alert("Please select a file first.");
+            return;
         }
+        alert("Download functionality would be implemented on a real server. This is a demonstration.");
+        const a = document.createElement('a');
+        a.href = videoPreview.src;
+        a.download = `converted-${Date.now()}`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
     });
 });
