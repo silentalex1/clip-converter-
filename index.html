@@ -13,16 +13,21 @@
             <u>Clip Converter</u> <sup>beta</sup>
         </a>
         <div class="nav-user" id="nav-user"></div>
-        <a href="accountcreation.html" class="signin-btn" id="signin-btn">Sign In</a>
+        <div class="nav-buttons">
+            <a href="youtubeclip.html" class="nav-btn">Youtube Clip</a>
+            <a href="accountcreation.html" class="signin-btn" id="signin-btn">Sign In</a>
+        </div>
     </nav>
 
     <main class="container">
-        <h1 class="animation-text">
-            <span class="anim-word clip">Clip</span>
-            <span class="anim-word">it</span>
-            <span class="anim-word enhance">enhance</span>
-            <span class="anim-word">it.</span>
-        </h1>
+        <div class="animation-text-container">
+            <h1 class="animation-text">
+                <span class="word clip">Clip</span>
+                <span class="word">it</span>
+                <span class="word enhance">enhance</span>
+                <span class="word">it.</span>
+            </h1>
+        </div>
 
         <div class="file-upload-container" id="file-upload-container">
             <label for="file-upload" class="custom-file-upload">
@@ -32,9 +37,11 @@
             <input id="file-upload" type="file" accept=".mov,.mp3,.mp4,.avi,.mkv,video/*,audio/*">
         </div>
         
-        <div class="loading-bar-wrapper">
-            <div class="loading-bar"></div>
-            <span class="loading-percent">0%</span>
+        <div class="processing-container">
+            <div class="loading-bar-wrapper">
+                <div class="loading-bar"></div>
+                <span class="loading-percent">0%</span>
+            </div>
         </div>
 
         <section class="conversion-section">
