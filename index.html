@@ -9,29 +9,23 @@
 </head>
 <body>
     <nav class="navbar">
-        <a href="https://discord.gg/yWErcPvkVt" target="_blank" class="logo-link">
-            <div class="logo">
-                Clip Converter <sup>beta</sup>
-            </div>
+        <a href="https://discord.gg/yWErcPvkVt" target="_blank" class="logo">
+            <u>Clip Converter</u> <sup>beta</sup>
         </a>
-        <div class="nav-center">
-            <span id="nav-user-display" class="logged-in-user"></span>
-        </div>
-        <div id="nav-auth-section">
-             <a href="/accountcreation" class="signin-btn">Sign In</a>
-        </div>
+        <div class="nav-user" id="nav-user"></div>
+        <a href="accountcreation.html" class="signin-btn" id="signin-btn">Sign In</a>
     </nav>
 
     <div class="container">
-        <h1 class="main-headline">
-            <span class="clip">Clip</span> it <span class="enhance">enhance</span> it.
-        </h1>
+        <div class="animation-text">
+            <span class="clip">Clip</span>&nbsp;it&nbsp;<span class="enhance">enhance</span>&nbsp;it.
+        </div>
 
         <div class="file-upload-container">
             <label for="file-upload" class="custom-file-upload">
-                <svg xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 96 960 960" width="48"><path d="M440 856V536L216 760l-56-56 320-320 320 320-56 56-224-224v320h-80ZM160 376v-80h640v80H160Z"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="80" height="80"><path d="M9.984 12.984v-6h4.031v6h2.906l-4.922 4.922-4.922-4.922h2.906zM18.984 9c0-2.203-1.781-3.984-3.984-3.984-1.641 0-3.047 1.031-3.609 2.484-0.188-0.047-0.375-0.047-0.563-0.047-1.406 0-2.578 0.844-3.141 2.016-1.547 0.188-2.672 1.547-2.672 3.094 0 1.734 1.406 3.141 3.141 3.141h10.266c1.359 0 2.484-1.125 2.484-2.484 0-1.266-0.938-2.297-2.156-2.438-0.234-1.266-1.266-2.25-2.531-2.25z" fill="#ffffff"></path></svg>
             </label>
-            <input id="file-upload" type="file" accept=".mov,.mp3,.mp4,.avi,.wmv,.flac,video/*,audio/*">
+            <input id="file-upload" type="file" accept=".mov,.mp3,.mp4,.avi,.mkv,video/*,audio/*">
             <div class="loading-bar-wrapper">
                 <div class="loading-bar"></div>
                 <span class="loading-percent">0%</span>
@@ -43,23 +37,23 @@
                 <video id="video-preview" controls></video>
             </div>
             <div class="conversion-options">
-                <label for="convert-select">Select what to convert:</label>
+                <label for="convert-select">Convert to:</label>
                 <select id="convert-select" name="format">
-                    <option value="mp3">mp3</option>
-                    <option value="mp4">mp4</option>
-                    <option value="mov">mov</option>
-                    <option value="avi">avi</option>
-                    <option value="wmv">wmv</option>
-                    <option value="flac">flac</option>
+                    <option value="mp3">MP3</option>
+                    <option value="mp4">MP4</option>
+                    <option value="mov">MOV</option>
+                    <option value="avi">AVI</option>
+                    <option value="mkv">MKV</option>
+                    <option value="wav">WAV</option>
                 </select>
 
-                <label for="quality-select">Select the quality for your video:</label>
+                <label for="quality-select">Change quality:</label>
                 <select id="quality-select" name="quality">
+                    <option value="480p">480p</option>
                     <option value="720p">720p</option>
                     <option value="1080p">1080p</option>
-                    <option value="1440p">1440p</option>
-                    <option value="4K" class="premium-option" disabled>4K 👑</option>
-                    <option value="8K" class="premium-option" disabled>8K 👑</option>
+                    <option value="1440p" class="premium-option" disabled>1440p 👑</option>
+                    <option value="4k" class="premium-option" disabled>4K 👑</option>
                 </select>
                 <button class="download-btn">Download</button>
             </div>
@@ -71,7 +65,7 @@
         <ul>
             <li>Select the clip you want to use.</li>
             <li>Wait for the loading clip animation to finish. <a href="/premiumlist">Click here</a> for premium and faster loading.</li>
-            <li>After the loading animation finishes you can change your video quality, and convert it to any format you want.</li>
+            <li>After loading, you can change your video quality and format.</li>
         </ul>
         <div class="tutorial-visual">
             <p>tutorial - how to use the clip converter.</p>
