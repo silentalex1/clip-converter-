@@ -1,37 +1,33 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const fileInput = document.getElementById('file-upload');
-    const mainUploader = document.getElementById('main-uploader');
+    const fileUploadContainer = document.getElementById('file-upload-container');
+    const videoFileInput = document.getElementById('file-upload-video');
+    const photoFileInput = document.getElementById('file-upload-photo');
+    const configFileInput = document.getElementById('file-upload-config');
+    
     const loadingBarWrapper = document.querySelector('.loading-bar-wrapper');
     const loadingBar = document.querySelector('.loading-bar');
     const loadingPercent = document.querySelector('.loading-percent');
-    const editorContainer = document.querySelector('.editor-container');
+    
+    const mediaProcessingArea = document.querySelector('.media-processing-area');
     const videoPreview = document.getElementById('video-preview');
     const photoPreview = document.getElementById('photo-preview');
+    const configVideoPreview = document.getElementById('config-video-preview');
+    
     const navUser = document.getElementById('nav-user');
     const signinBtn = document.getElementById('signin-btn');
-    const editorTabs = document.querySelectorAll('.editor-tab-link');
-    const tabContents = document.querySelectorAll('.editor-tab-content');
 
+    document.querySelectorAll('.premium-option').forEach(option => {
+        option.innerHTML += ' <span class="crown-icon"></span>';
+    });
+    
     const loggedInUser = localStorage.getItem('clipConverterUser');
     if (loggedInUser) {
         navUser.textContent = loggedInUser;
         signinBtn.style.display = 'none';
     }
 
-    editorTabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            editorTabs.forEach(item => item.classList.remove('active'));
-            tabContents.forEach(item => item.classList.remove('active'));
-            tab.classList.add('active');
-            document.getElementById(tab.dataset.tab).classList.add('active');
-        });
-    });
-
-    fileInput.addEventListener('change', (event) => {
-        const file = event.target.files[0];
-        if (!file) return;
-
-        mainUploader.style.display = 'none';
+    const startLoadingProcess = (callback) => {
+        fileUploadContainer.style.display = 'none';
         loadingBarWrapper.style.display = 'block';
         let currentPercent = 0;
         const loadingInterval = setInterval(() => {
@@ -42,20 +38,42 @@ document.addEventListener('DOMContentLoaded', () => {
                 clearInterval(loadingInterval);
                 setTimeout(() => {
                     loadingBarWrapper.style.display = 'none';
-                    editorContainer.style.display = 'block';
-                    const fileURL = URL.createObjectURL(file);
-                    
-                    if (file.type.startsWith('video/')) {
-                        videoPreview.src = fileURL;
-                        document.querySelector('[data-tab="video-editor"]').click();
-                    } else if (file.type.startsWith('image/')) {
-                        photoPreview.src = fileURL;
-                        photoPreview.style.display = 'block';
-                        document.querySelector('[data-tab="photo-editor"]').click();
-                    }
+                    mediaProcessingArea.style.display = 'block';
+                    if(callback) callback();
                 }, 500);
             }
-        }, 30);
+        }, 20);
+    };
+
+    videoFileInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+        startLoadingProcess(() => {
+            videoPreview.src = URL.createObjectURL(file);
+        });
+    });
+
+    photoFileInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = e => photoPreview.src = e.target.result;
+        reader.readAsDataURL(file);
+    });
+    
+    configFileInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+        configVideoPreview.src = URL.createObjectURL(file);
+    });
+
+    document.querySelectorAll('.media-tab-link').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.media-tab-link').forEach(item => item.classList.remove('active'));
+            document.querySelectorAll('.media-tab-content').forEach(item => item.classList.remove('active'));
+            tab.classList.add('active');
+            document.getElementById(tab.dataset.tab).classList.add('active');
+        });
     });
 
     document.querySelectorAll('.download-btn').forEach(button => {
