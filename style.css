@@ -189,7 +189,6 @@ input[type="file"] { display: none; }
     padding: 50px 5%;
     text-align: center;
 }
-.tutorial-section h2 { font-size: 2rem; margin-bottom: 20px; }
 .tutorial-section ul {
     list-style-type: '✓ ';
     padding-left: 20px;
@@ -197,27 +196,18 @@ input[type="file"] { display: none; }
     text-align: left;
     margin-bottom: 30px;
 }
-.tutorial-section ul li { margin: 15px 0; }
 .tutorial-section ul li a { color: #00aaff; text-decoration: none; font-weight: 600; }
 
-.tutorial-visual { margin-top: 20px; }
-.visual-animation-bar {
-    height: 100px;
-    max-width: 800px;
-    margin: 20px auto;
-    background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));
-    background-size: 200% 200%;
-    border-radius: 10px;
-    animation: gradient-animation 4s ease infinite;
-}
-@keyframes gradient-animation {
-    0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; }
-}
-
 .suggestions-section { border-top: 2px solid var(--dark-bg); }
-.suggestions-section h2 { font-size: 1.8rem; }
-.suggestions-section p { font-size: 1.1rem; color: var(--text-muted); }
 .suggestions-btn { margin-top: 10px; font-size: 1.1rem; }
+
+.site-footer {
+    padding: 20px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    background-color: var(--dark-bg);
+}
 
 @media (min-width: 768px) {
     .nav-user { display: block; }
