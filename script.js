@@ -1,14 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
     const fileInput = document.getElementById('file-upload');
-    const customFileUploadButton = document.querySelector('.custom-file-upload');
+    const mainUploader = document.getElementById('main-uploader');
     const loadingBarWrapper = document.querySelector('.loading-bar-wrapper');
     const loadingBar = document.querySelector('.loading-bar');
     const loadingPercent = document.querySelector('.loading-percent');
-    const conversionSection = document.querySelector('.conversion-section');
+    const editorContainer = document.querySelector('.editor-container');
     const videoPreview = document.getElementById('video-preview');
-    const downloadBtn = document.querySelector('.download-btn');
+    const photoPreview = document.getElementById('photo-preview');
     const navUser = document.getElementById('nav-user');
     const signinBtn = document.getElementById('signin-btn');
+    const editorTabs = document.querySelectorAll('.editor-tab-link');
+    const tabContents = document.querySelectorAll('.editor-tab-content');
 
     const loggedInUser = localStorage.getItem('clipConverterUser');
     if (loggedInUser) {
@@ -16,11 +18,20 @@ document.addEventListener('DOMContentLoaded', () => {
         signinBtn.style.display = 'none';
     }
 
+    editorTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            editorTabs.forEach(item => item.classList.remove('active'));
+            tabContents.forEach(item => item.classList.remove('active'));
+            tab.classList.add('active');
+            document.getElementById(tab.dataset.tab).classList.add('active');
+        });
+    });
+
     fileInput.addEventListener('change', (event) => {
         const file = event.target.files[0];
         if (!file) return;
 
-        customFileUploadButton.style.display = 'none';
+        mainUploader.style.display = 'none';
         loadingBarWrapper.style.display = 'block';
         let currentPercent = 0;
         const loadingInterval = setInterval(() => {
@@ -31,25 +42,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 clearInterval(loadingInterval);
                 setTimeout(() => {
                     loadingBarWrapper.style.display = 'none';
-                    conversionSection.style.display = 'flex';
-                    videoPreview.src = URL.createObjectURL(file);
-                    videoPreview.play();
+                    editorContainer.style.display = 'block';
+                    const fileURL = URL.createObjectURL(file);
+                    
+                    if (file.type.startsWith('video/')) {
+                        videoPreview.src = fileURL;
+                        document.querySelector('[data-tab="video-editor"]').click();
+                    } else if (file.type.startsWith('image/')) {
+                        photoPreview.src = fileURL;
+                        photoPreview.style.display = 'block';
+                        document.querySelector('[data-tab="photo-editor"]').click();
+                    }
                 }, 500);
             }
         }, 30);
     });
 
-    downloadBtn.addEventListener('click', () => {
-        if (!videoPreview.src) {
-            alert("Please select a file first.");
-            return;
-        }
-        alert("Download functionality would be implemented on a real server. This is a demonstration.");
-        const a = document.createElement('a');
-        a.href = videoPreview.src;
-        a.download = `converted-${Date.now()}`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
+    document.querySelectorAll('.download-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            alert("Download initiated. This is a frontend demonstration.");
+        });
     });
 });
