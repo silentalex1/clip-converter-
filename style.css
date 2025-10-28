@@ -54,11 +54,11 @@ body, html {
     display: none;
 }
 
-.nav-buttons { display: flex; align-items: center; gap: 15px; }
+.nav-buttons { display: flex; align-items: center; gap: 10px; }
 
 .nav-btn, .signin-btn, .suggestions-btn {
     display: inline-block;
-    padding: 8px 25px;
+    padding: 8px 20px;
     background-color: var(--primary-color);
     color: var(--text-color);
     text-decoration: none;
@@ -69,6 +69,7 @@ body, html {
     border: none;
     cursor: pointer;
     font-family: 'Poppins', sans-serif;
+    font-size: clamp(0.8rem, 2vw, 1rem);
 }
 
 .nav-btn:hover, .signin-btn:hover, .suggestions-btn:hover {
@@ -184,21 +185,59 @@ input[type="file"] { display: none; }
     font-size: 1.1rem;
 }
 
-.info-sections { background-color: var(--light-bg); padding: 1px 0; }
-.tutorial-section, .suggestions-section {
-    padding: 50px 5%;
-    text-align: center;
-}
-.tutorial-section ul {
-    list-style-type: '✓ ';
-    padding-left: 20px;
-    display: inline-block;
-    text-align: left;
-    margin-bottom: 30px;
-}
-.tutorial-section ul li a { color: #00aaff; text-decoration: none; font-weight: 600; }
+.info-sections { background-color: var(--light-bg); padding: 50px 5%; }
 
-.suggestions-section { border-top: 2px solid var(--dark-bg); }
+.features-section {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto 50px auto;
+}
+.feature-box {
+    background-color: var(--card-bg);
+    padding: 25px;
+    border-radius: 15px;
+}
+.feature-box h3 {
+    margin-top: 0;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--primary-color);
+    display: inline-block;
+}
+.feature-box ul {
+    list-style: none;
+    padding: 0;
+    text-align: left;
+}
+.feature-box ul li {
+    padding-left: 20px;
+    position: relative;
+    margin-bottom: 10px;
+}
+.feature-box ul li::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    font-weight: 900;
+    color: var(--secondary-color);
+}
+.format-spinner {
+    display: inline-block;
+    background-color: #333;
+    padding: 2px 8px;
+    border-radius: 5px;
+    font-weight: 600;
+    color: var(--secondary-color);
+    transition: opacity 0.4s ease;
+}
+.format-spinner.fade { opacity: 0; }
+
+.suggestions-section {
+    text-align: center;
+    border-top: 2px solid var(--dark-bg);
+    padding-top: 50px;
+}
 .suggestions-btn { margin-top: 10px; font-size: 1.1rem; }
 
 .site-footer {
@@ -211,6 +250,7 @@ input[type="file"] { display: none; }
 
 @media (min-width: 768px) {
     .nav-user { display: block; }
+    .features-section { grid-template-columns: repeat(3, 1fr); }
 }
 
 @media (min-width: 992px) {
