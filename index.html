@@ -8,10 +8,8 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="crown-icon-definition" style="display: none;">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-            <path d="M452.5 192.5L416 205.1l-33.5-12.6-12.6 33.5-33.5-12.6-12.6 33.5-33.5-12.6-12.6 33.5-33.5-12.6L192.5 192.5 160 179.9l-12.6 33.5-33.5-12.6-12.6 33.5-33.5-12.6L59.5 256l12.6 33.5-33.5 12.6 33.5 12.6 12.6-33.5 33.5 12.6 12.6-33.5 33.5 12.6 12.6-33.5 33.5 12.6L256 256l33.5 12.6 12.6-33.5 33.5 12.6 12.6-33.5 33.5 12.6 12.6-33.5 33.5 12.6 12.6-33.5L452.5 192.5zM256 64L320 160H192L256 64zM128 448h256V256H128v192z"/>
-        </svg>
+    <div style="display: none;">
+        <svg id="crown-icon-def" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256s256-114.6 256-256S397.4 0 256 0zM256 128c17.7 0 32 14.3 32 32c0 17.7-14.3 32-32 32s-32-14.3-32-32c14.3-32 32-32 32-32zm0 256c-53 0-96-43-96-96s43-96 96-96s96 43 96 96s-43 96-96 96z"/></svg>
     </div>
 
     <nav class="navbar">
@@ -41,81 +39,32 @@
         <div class="media-processing-area">
             <div class="media-tabs">
                 <button class="media-tab-link active" data-tab="video-tab">Video</button>
-                <button class="media-tab-link" data-tab="photo-tab">Photo</button>
+                <button class="media-tab-link" data-tab="photo-tab">Photo Studio</button>
                 <button class="media-tab-link" data-tab="config-tab">Video Config</button>
             </div>
 
             <div id="video-tab" class="media-tab-content active">
-                <div class="media-column">
+                <div class="media-preview-column">
                     <video id="video-preview" controls></video>
-                    <input id="file-upload-video" type="file" accept="video/*,.mov,.mp4,.avi,.mkv,.webm,.flv">
+                    <input id="file-upload-video" type="file" accept="video/*,.mov,.mp4,.avi,.mkv,.webm">
                 </div>
-                <div class="options-column">
-                    <label for="convert-select">Convert to:</label>
-                    <select id="convert-select" name="format">
-                        <option value="mp4">MP4</option><option value="mp3">MP3</option><option value="mov">MOV</option><option value="avi">AVI</option><option value="mkv">MKV</option><option value="webm">WEBM</option><option value="flv">FLV</option>
-                    </select>
-                    <label for="quality-select-video">Change quality:</label>
-                    <select id="quality-select-video" name="quality">
-                        <option value="480p">480p</option><option value="720p">720p</option><option value="1080p">1080p</option>
-                        <option value="1440p" class="premium-option" disabled>1440p</option>
-                        <option value="4k" class="premium-option" disabled>4k</option>
-                    </select>
-                    <button class="download-btn">Download</button>
-                </div>
-            </div>
-
-            <div id="photo-tab" class="media-tab-content">
-                <div class="media-column">
-                    <img id="photo-preview" src="" alt="Photo Preview">
-                    <label for="file-upload-photo" class="custom-file-upload small-upload-btn">Upload Photo</label>
-                    <input id="file-upload-photo" type="file" accept="image/*">
-                </div>
-                <div class="options-column">
-                    <label for="quality-select-photo">Change photo quality:</label>
-                    <select id="quality-select-photo" name="quality">
-                        <option value="480p">480p</option><option value="720p">720p</option><option value="1080p">1080p</option>
-                        <option value="1440p" class="premium-option" disabled>1440p</option>
-                        <option value="4k" class="premium-option" disabled>4K</option>
-                    </select>
-                    <button class="download-btn">Download Photo</button>
-                </div>
-            </div>
-            
-            <div id="config-tab" class="media-tab-content">
-                <div class="premium-blocker">
-                    <div class="crown-icon large"></div>
-                    <p>Premium feature only</p>
-                </div>
-                <div class="media-column">
-                    <video id="config-video-preview" controls></video>
-                    <label for="file-upload-config" class="custom-file-upload small-upload-btn">Upload Video</label>
-                    <input id="file-upload-config" type="file" accept="video/*">
-                </div>
-                <div class="options-column">
-                    <label for="prompt-input">Enter prompt to change video:</label>
-                    <input type="text" id="prompt-input" placeholder="e.g., make the sky blue">
-                    <label for="quality-select-config">Change quality:</label>
-                    <select id="quality-select-config" name="quality">
-                        <option value="1080p">1080p</option>
-                        <option value="1440p">1440p</option><option value="4k">4K</option>
-                        <option value="8k" class="premium-option" disabled>8K</option>
-                        <option value="10k" class="premium-option" disabled>10K (Best)</option>
-                    </select>
-                    <button class="download-btn">Download Result</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="tutorial-section">
-        <h2>How to use the website.</h2>
-        <ul>
-            <li>Select the clip you want to use.</li>
-            <li>Wait for the loading clip animation to finish. <a href="premiumlist.html">Click here</a> for premium and faster loading.</li>
-            <li>After loading, you can change your video quality and format.</li>
-        </ul>
-    </div>
-    <script src="script.js"></script>
-</body>
-</html>
+                <div class="media-options-column">
+                    <div class="option-group">
+                        <label for="convert-select">Convert Format</label>
+                        <select id="convert-select">
+                            <option value="mp4">MP4 (Universal)</option>
+                            <option value="mp3">MP3 (Audio Only)</option>
+                            <option value="mov">MOV (High Quality)</option>
+                            <option value="avi">AVI</option>
+                        </select>
+                    </div>
+                    <div class="option-group">
+                        <label for="quality-select-video">Video Resolution</label>
+                        <select id="quality-select-video">
+                            <option value="720p">720p HD</option>
+                            <option value="1080p" selected>1080p Full HD</option>
+                            <option value="1440p" class="premium-option" disabled>1440p QHD 👑</option>
+                            <option value="4k" class="premium-option" disabled>4K UHD 👑</option>
+                            <option value="8k" class="premium-option" disabled>8K Ultra 👑</option>
+                        </select>
+                    </di
