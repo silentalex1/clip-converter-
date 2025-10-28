@@ -1,0 +1,323 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    font-family: 'Poppins', sans-serif;
+    background-color: #121212;
+    color: #ffffff;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background: rgba(18, 18, 18, 0.8);
+    backdrop-filter: blur(10px);
+    position: fixed;
+    width: calc(100% - 60px);
+    top: 0;
+    z-index: 1000;
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.logo sup {
+    font-size: 0.8rem;
+    color: #bbbbbb;
+    font-weight: 600;
+    margin-left: 2px;
+}
+
+.signin-btn {
+    padding: 8px 20px;
+    background-color: #8A2BE2;
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 20px;
+    font-weight: 600;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.signin-btn:hover {
+    background-color: #7B1FA2;
+    transform: scale(1.05);
+}
+
+.initial-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    z-index: 9999;
+    transition: transform 1s ease-in-out;
+}
+
+.initial-background.slide-up {
+    transform: translateY(-100%);
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding-top: 80px;
+}
+
+.animation-text {
+    font-size: 4.5vw;
+    font-weight: 700;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInText 1s ease 0.5s forwards;
+}
+
+.animation-text span {
+    opacity: 0;
+    animation: fadeInWords 0.8s ease forwards;
+}
+
+.animation-text .clip {
+    color: #00ff7f;
+    animation-delay: 1s;
+}
+
+.animation-text .enhance {
+    color: #8A2BE2;
+    animation-delay: 1.8s;
+}
+
+@keyframes fadeInText {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInWords {
+    to {
+        opacity: 1;
+    }
+}
+
+.file-upload-container {
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.file-upload-container.visible {
+    opacity: 1;
+}
+
+.custom-file-upload {
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.custom-file-upload svg {
+    width: 80px;
+    height: 80px;
+    fill: #ffffff;
+    transition: fill 0.3s ease;
+}
+
+.custom-file-upload:hover {
+    transform: scale(1.1);
+}
+
+.custom-file-upload:hover svg {
+    fill: #8A2BE2;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+.loading-bar-wrapper {
+    width: 350px;
+    height: 25px;
+    background-color: #333;
+    border-radius: 15px;
+    margin-top: 30px;
+    position: relative;
+    overflow: hidden;
+    display: none;
+}
+
+.loading-bar {
+    width: 0%;
+    height: 100%;
+    border-radius: 15px;
+    background: linear-gradient(90deg, #00ff7f, #8A2BE2);
+    transition: width 0.3s ease-out;
+    position: relative;
+}
+
+.loading-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1) 10px, transparent 10px, transparent 20px);
+    animation: moveParticles 1s linear infinite;
+}
+
+@keyframes moveParticles {
+    from { background-position: 0 0; }
+    to { background-position: 28px 0; }
+}
+
+.loading-percent {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.conversion-section {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    width: 90%;
+    max-width: 1000px;
+    margin-top: 50px;
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+
+.conversion-section.visible {
+    display: flex;
+    opacity: 1;
+}
+
+.video-preview-wrapper {
+    width: 100%;
+    max-width: 500px;
+}
+
+#video-preview {
+    width: 100%;
+    border-radius: 10px;
+}
+
+.conversion-options {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 400px;
+}
+
+.conversion-options label {
+    margin-top: 15px;
+    font-weight: 600;
+}
+
+.conversion-options select {
+    padding: 10px;
+    margin-top: 8px;
+    border-radius: 8px;
+    border: none;
+    background-color: #2a2a2a;
+    color: #ffffff;
+    font-size: 1rem;
+}
+
+.premium-option {
+    color: #aaa;
+}
+
+.download-btn {
+    margin-top: 25px;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 25px;
+    background-color: #8A2BE2;
+    color: #ffffff;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.download-btn:hover {
+    background-color: #7B1FA2;
+    transform: scale(1.05);
+}
+
+.tutorial-section {
+    padding: 50px 30px;
+    background-color: #1a1a1a;
+    margin-top: 100px;
+    text-align: center;
+}
+
+.tutorial-section h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.tutorial-section ul {
+    list-style-type: '✓ ';
+    padding-left: 20px;
+    display: inline-block;
+    text-align: left;
+    margin-bottom: 30px;
+}
+
+.tutorial-section ul li {
+    margin: 15px 0;
+}
+
+.tutorial-section ul li a {
+    color: #00aaff;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.tutorial-visual {
+    margin-top: 20px;
+}
+
+.visual-animation-bar {
+    height: 100px;
+    max-width: 800px;
+    margin: 20px auto;
+    background: linear-gradient(90deg, #00ff7f, #8A2BE2);
+    background-size: 200% 200%;
+    border-radius: 10px;
+    animation: gradient-animation 4s ease infinite;
+}
+
+@keyframes gradient-animation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@media (min-width: 768px) {
+    .conversion-section {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+}
