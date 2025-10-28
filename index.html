@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clip Converter</title>
+    <meta name="description" content="your best #1 free converter convert your clips to mp3, mp4, and even enhanced your video quality all for free.">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            Clip Converter <sup>beta</sup>
+        </div>
+        <a href="/login" class="signin-btn">Sign In</a>
+    </nav>
+
+    <div class="initial-background"></div>
+
+    <div class="container">
+        <div class="animation-text">
+            <span class="clip">Clip</span> it <span class="enhance">enhance</span> it.
+        </div>
+
+        <div class="file-upload-container">
+            <label for="file-upload" class="custom-file-upload">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
+            </label>
+            <input id="file-upload" type="file" accept=".mov,.mp3,.mp4,video/*,audio/*">
+            <div class="loading-bar-wrapper">
+                <div class="loading-bar"></div>
+                <span class="loading-percent">0%</span>
+            </div>
+        </div>
+
+        <div class="conversion-section">
+            <div class="video-preview-wrapper">
+                <video id="video-preview" controls></video>
+            </div>
+            <div class="conversion-options">
+                <label for="convert-select">Select what to convert:</label>
+                <select id="convert-select" name="format">
+                    <option value="mp3">mp3</option>
+                    <option value="mp4">mp4</option>
+                    <option value="mov">mov</option>
+                    <option value="movie">movie</option>
+                </select>
+
+                <label for="quality-select">Select the quality to change your video to:</label>
+                <select id="quality-select" name="quality">
+                    <option value="720q">720q</option>
+                    <option value="1040q">1040q</option>
+                    <option value="2040q" class="premium-option" disabled>2040q 👑</option>
+                </select>
+                <button class="download-btn">Download</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="tutorial-section">
+        <h2>How to use the website.</h2>
+        <ul>
+            <li>Select the clip you want to use.</li>
+            <li>Wait for the loading clip animation to finish. <a href="/premiumlist">Click here</a> for premium and faster loading.</li>
+            <li>After loading clip animation finish you can change your video quality, and change it to mp3, mp4, or whatever you want.</li>
+        </ul>
+        <div class="tutorial-visual">
+            <p>tutorial - how to use the clip converter.</p>
+            <div class="visual-animation-bar"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
