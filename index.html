@@ -9,17 +9,22 @@
 </head>
 <body>
     <nav class="navbar">
-        <div class="logo">
-            Clip Converter <sup>beta</sup>
+        <a href="https://discord.gg/yWErcPvkVt" target="_blank" class="logo-link">
+            <div class="logo">
+                Clip Converter <sup>beta</sup>
+            </div>
+        </a>
+        <div class="nav-center">
+            <span id="nav-user-display" class="logged-in-user"></span>
         </div>
-        <div id="nav-user-section">
+        <div id="nav-auth-section">
              <a href="/accountcreation" class="signin-btn">Sign In</a>
         </div>
     </nav>
 
     <div class="container">
-        <h1 class="animation-text">
-            <span class="clip">Clip</span><span class="it-box">it</span> <span class="enhance">enhance</span><span class="it-box">it.</span>
+        <h1 class="main-headline">
+            <span class="clip">Clip</span> it <span class="enhance">enhance</span> it.
         </h1>
 
         <div class="file-upload-container">
@@ -55,25 +60,3 @@
                     <option value="1440p">1440p</option>
                     <option value="4K" class="premium-option" disabled>4K 👑</option>
                     <option value="8K" class="premium-option" disabled>8K 👑</option>
-                </select>
-                <button class="download-btn">Download</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="tutorial-section">
-        <h2>How to use the website.</h2>
-        <ul>
-            <li>Select the clip you want to use.</li>
-            <li>Wait for the loading clip animation to finish. <a href="/premiumlist">Click here</a> for premium and faster loading.</li>
-            <li>After the loading animation finishes you can change your video quality, and convert it to any format you want.</li>
-        </ul>
-        <div class="tutorial-visual">
-            <p>tutorial - how to use the clip converter.</p>
-            <div class="visual-animation-bar"></div>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
-</body>
-</html
