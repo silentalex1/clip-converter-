@@ -32,23 +32,23 @@
             <input id="file-upload" type="file" accept="image/png, image/jpeg, image/webp">
         </div>
         
-        <div class="processing-container">
+        <div class="processing-container" id="processing-container">
             <div class="loading-bar-wrapper">
                 <div class="loading-bar"></div>
                 <span class="loading-percent">0%</span>
             </div>
         </div>
 
-        <section class="conversion-section">
+        <section class="conversion-section" id="conversion-section">
             <div class="photo-editor-wrapper">
                 <div class="comparison-slider" id="comparison-slider">
-                    <figure class="before">
-                        <img id="before-image" src="" alt="Before">
-                    </figure>
-                    <figure class="after" id="after-figure">
+                    <img id="before-image" src="" alt="Before">
+                    <div class="after-image-container" id="after-image-container">
                         <img id="after-image" src="" alt="After">
-                    </figure>
-                    <input type="range" min="0" max="100" value="50" class="slider" id="slider" aria-label="Percentage of before photo shown">
+                    </div>
+                    <div class="slider-line"></div>
+                    <div class="slider-handle"></div>
+                    <input type="range" min="0" max="100" value="50" class="slider-input" id="slider-input">
                 </div>
             </div>
             <div class="conversion-options">
