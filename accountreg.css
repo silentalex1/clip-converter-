@@ -7,102 +7,99 @@ body, html {
     height: 100%;
     font-family: 'Poppins', sans-serif;
     background-color: #121212;
+    color: #ffffff;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 15px;
-    box-sizing: border-box;
 }
 
-.account-container {
-    background-color: #1e1e1e;
-    padding: 30px;
+.form-container {
+    background: #1e1e1e;
+    padding: 40px;
     border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    width: 100%;
+    width: 90%;
     max-width: 400px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     position: relative;
 }
 
 .tabs {
     display: flex;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
     border-bottom: 2px solid #333;
 }
 
 .tab-link {
     flex: 1;
     padding: 15px;
-    border: none;
     background: none;
+    border: none;
     color: #888;
-    cursor: pointer;
     font-size: 1rem;
     font-weight: 600;
-    transition: color 0.3s ease, border-bottom 0.3s ease;
+    cursor: pointer;
+    transition: color 0.3s, border-bottom 0.3s;
+    border-bottom: 3px solid transparent;
 }
 
 .tab-link.active {
-    color: #8A2BE2;
-    border-bottom: 2px solid #8A2BE2;
+    color: #ffffff;
+    border-bottom: 3px solid #8A2BE2;
 }
 
 .tab-content { display: none; }
 .tab-content.active { display: block; }
 
-form { display: flex; flex-direction: column; }
-
-input {
-    padding: 12px;
-    margin-bottom: 15px;
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+    width: calc(100% - 20px);
+    padding: 12px 10px;
+    margin-bottom: 20px;
     border: 1px solid #444;
     border-radius: 8px;
-    background-color: #2a2a2a;
+    background: #2a2a2a;
     color: #fff;
     font-size: 1rem;
 }
 
-button {
+button[type="submit"] {
+    width: 100%;
     padding: 12px;
     border: none;
-    border-radius: 8px;
-    background-color: #8A2BE2;
+    border-radius: 20px;
+    background: #8A2BE2;
     color: #fff;
     font-size: 1.1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s;
 }
 
-button:hover { background-color: #7B1FA2; }
-
-#form-message {
-    text-align: center;
-    margin-top: 15px;
-    color: #00ff7f;
-}
+button[type="submit"]:hover { background: #7B1FA2; }
 
 .tooltip-container {
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: 15px;
+    right: 15px;
 }
 
-.tooltip-trigger {
+.question-mark {
     width: 25px;
     height: 25px;
-    background-color: #ff4d4d;
-    color: #fff;
+    background: red;
+    color: white;
     border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
+    font-weight: 600;
     cursor: pointer;
-    font-weight: 700;
 }
 
-.tooltip-text {
+.tooltip-box {
     visibility: hidden;
+    opacity: 0;
     width: 200px;
     background-color: #333;
     color: #fff;
@@ -114,11 +111,10 @@ button:hover { background-color: #7B1FA2; }
     bottom: 125%;
     left: 50%;
     margin-left: -110px;
-    opacity: 0;
     transition: opacity 0.3s;
 }
 
-.tooltip-text::after {
+.tooltip-box::after {
     content: "";
     position: absolute;
     top: 100%;
@@ -129,7 +125,7 @@ button:hover { background-color: #7B1FA2; }
     border-color: #333 transparent transparent transparent;
 }
 
-.tooltip-container:hover .tooltip-text {
+.tooltip-container:hover .tooltip-box {
     visibility: visible;
     opacity: 1;
 }
