@@ -28,12 +28,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 clearInterval(loadingInterval);
                 const reader = new FileReader();
                 reader.onload = (e) => {
-                    beforeImage.src = e.target.result;
-                    afterImage.src = e.target.result;
+                    const imageUrl = e.target.result;
+                    beforeImage.src = imageUrl;
+                    afterImage.src = imageUrl;
                     setTimeout(() => {
                         loadingBarWrapper.style.display = 'none';
                         conversionSection.style.display = 'flex';
-                        conversionSection.style.opacity = '1';
+                        requestAnimationFrame(() => {
+                             conversionSection.style.opacity = '1';
+                        });
                     }, 500);
                 };
                 reader.readAsDataURL(file);
@@ -52,6 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const img = new Image();
+        img.crossOrigin = 'anonymous';
         img.onload = () => {
             const context = canvas.getContext('2d');
             canvas.width = img.width;
@@ -61,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const link = document.createElement('a');
             link.download = 'enhanced-photo.png';
-            link.href = canvas.toDataURL();
+            link.href = canvas.toDataURL('image/png');
             link.click();
         };
         img.src = afterImage.src;
