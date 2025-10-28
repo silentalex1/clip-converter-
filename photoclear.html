@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Photo Enhancer - v1</title>
+    <title>Photo Enhance - Clip Converter</title>
     <link rel="stylesheet" href="photo.css">
 </head>
 <body>
@@ -20,13 +20,13 @@
                 <span class="word picture">Picture</span>
                 <span class="word">it,</span>
                 <span class="word see">see</span>
-                <span class="word"><u>it.</u></span>
+                <span class="word">it.<span class="underline"></span></span>
             </h1>
         </div>
 
         <div class="file-upload-container" id="file-upload-container">
             <label for="file-upload" class="custom-file-upload">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="80" height="80"><path d="M9.984 12.984v-6h4.031v6h2.906l-4.922 4.922-4.922-4.922h2.906zM18.984 9c0-2.203-1.781-3.984-3.984-3.984-1.641 0-3.047 1.031-3.609 2.484-0.188-0.047-0.375-0.047-0.563-0.047-1.406 0-2.578 0.844-3.141 2.016-1.547 0.188-2.672 1.547-2.672 3.094 0 1.734 1.406 3.141 3.141 3.141h10.266c1.359 0 2.484-1.125 2.484-2.484 0-1.266-0.938-2.297-2.156-2.438-0.234-1.266-1.266-2.25-2.531-2.25z" fill="#ffffff"></path></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="80" height="80"><path d="M20 4v12h-1.5c-0.276 0-0.5.224-0.5.5s0.224.5 0.5.5h2c0.552 0 1-0.448 1-1v-13c0-0.552-0.448-1-1-1h-17c-0.552 0-1 0.448-1 1v13c0 0.552 0.448 1 1 1h14.5c0.276 0 0.5-0.224 0.5-0.5s-0.224-0.5-0.5-0.5h-14v-12h16zM8.5 12c1.381 0 2.5-1.119 2.5-2.5s-1.119-2.5-2.5-2.5-2.5 1.119-2.5 2.5 1.119 2.5 2.5 2.5zM17 14l-4.5-4.5-2.5 2.5-1.5-1.5-4.5 4.5v1h13v-1z" fill="#ffffff"></path></svg>
                 <span>Select a Photo</span>
             </label>
             <input id="file-upload" type="file" accept="image/png, image/jpeg, image/webp">
@@ -39,38 +39,40 @@
             </div>
         </div>
 
-        <section class="enhancement-section">
-            <div class="photo-preview-wrapper">
-                <div class="comparison-slider">
-                    <img id="before-image" src="" alt="Original Image">
-                    <div class="after-image-container">
-                        <img id="after-image" src="" alt="Enhanced Image">
-                    </div>
-                    <input type="range" min="0" max="100" value="50" class="slider" id="slider">
+        <section class="conversion-section">
+            <div class="photo-editor-wrapper">
+                <div class="comparison-slider" id="comparison-slider">
+                    <figure class="before">
+                        <img id="before-image" src="" alt="Before">
+                    </figure>
+                    <figure class="after" id="after-figure">
+                        <img id="after-image" src="" alt="After">
+                    </figure>
+                    <input type="range" min="0" max="100" value="50" class="slider" id="slider" aria-label="Percentage of before photo shown">
                 </div>
             </div>
-            <div class="enhancement-options">
-                <label for="quality-select">Export Quality:</label>
+            <div class="conversion-options">
+                <label for="quality-select">Change quality:</label>
                 <select id="quality-select" name="quality">
-                    <option value="720">720p</option>
-                    <option value="1080">1080p (HD)</option>
-                    <option value="1440" class="premium-option" disabled>1440p (2K) 👑</option>
-                    <option value="2160" class="premium-option" disabled>2160p (4K) 👑</option>
+                    <option value="720p">720p</option>
+                    <option value="1080p">1080p (HD)</option>
+                    <option value="1440p" class="premium-option" disabled>1440p (2K) 👑</option>
+                    <option value="2160p" class="premium-option" disabled>2160p (4K) 👑</option>
                 </select>
-                <button id="download-btn" class="download-btn">Download Photo</button>
+                <button id="download-btn" class="download-btn">Download photo</button>
             </div>
         </section>
     </main>
 
     <footer class="tutorial-section">
-        <h2>How to enhance your photo.</h2>
+        <h2>How to use the photo enhancer.</h2>
         <ul>
             <li>Take a picture, wait for the loading animation to finish.</li>
             <li>Use the clear tool to change the lighting of the photo.</li>
-            <li>And you're set to change quality of the photo.</li>
+            <li>And your set to change quality of the photo.</li>
         </ul>
     </footer>
-
+    <canvas id="canvas" style="display:none;"></canvas>
     <script src="photo.js"></script>
 </body>
 </html>
