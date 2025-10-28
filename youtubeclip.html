@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Youtube Converter - v1</title>
+    <link rel="stylesheet" href="youtube.css">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="nav-btn go-back-btn">Go Back</a>
+        <div class="nav-buttons">
+            <a href="accountcreation.html" class="signin-btn" id="signin-btn">Sign In</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="animation-text-container">
+            <h1 class="animation-text">
+                <span class="word">copy</span>
+                <span class="word link">link</span>
+                <span class="word">then</span>
+                <span class="word enhance">enhance</span>
+                <span class="word">it.</span>
+            </h1>
+        </div>
+
+        <form class="youtube-form" id="youtube-form">
+            <input type="text" id="youtube-url" placeholder="Paste youtube link here:" required>
+            <button type="submit">Submit</button>
+        </form>
+        
+        <div class="processing-container">
+            <div class="loading-bar-wrapper">
+                <div class="loading-bar"></div>
+                <span class="loading-percent">0%</span>
+            </div>
+        </div>
+
+        <section class="conversion-section">
+            <div class="video-preview-wrapper">
+                <iframe id="youtube-player" width="560" height="315" src="" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <div class="conversion-options">
+                <label for="convert-select">Convert to:</label>
+                <select id="convert-select" name="format">
+                    <option value="mp3">MP3</option>
+                    <option value="mp4">MP4</option>
+                    <option value="mov">MOV</option>
+                    <option value="avi">AVI</option>
+                </select>
+
+                <label for="quality-select">Change quality:</label>
+                <select id="quality-select" name="quality">
+                    <option value="480p">480p</option>
+                    <option value="720p">720p</option>
+                    <option value="1080p">1080p (HD)</option>
+                    <option value="1440p" class="premium-option" disabled>1440p (2K) 👑</option>
+                </select>
+                <button class="download-btn">Download</button>
+            </div>
+        </section>
+    </main>
+
+    <footer class="tutorial-section">
+        <h2>How to use the website.</h2>
+        <ul>
+            <li>Copy the youtube video link you want.</li>
+            <li>Wait for the loading clip animation to finish.</li>
+            <li>After loading animation finish, you can change your video quality and format.</li>
+        </ul>
+    </footer>
+
+    <script src="youtube.js"></script>
+</body>
+</html>
