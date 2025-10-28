@@ -3,23 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verify Your Account</title>
+    <title>Verify - Clip Converter</title>
     <link rel="stylesheet" href="verifystyle.css">
 </head>
 <body>
     <div class="verify-container">
-        <div class="header">
-            <svg class="email-icon" xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 96 960 960" width="48"><path d="M160 816V296l320 200 320-200v520H160Zm80-440 240 150 240-150-240-150-240 150Zm0 360h480V456l-240 150-240-150v280Z"/></svg>
-            <h2>Check Your Email</h2>
+        <h2>Verify Your Account</h2>
+        <div class="user-info" id="user-info">
         </div>
-        <p class="instruction">We have sent a verification code to <strong id="display-email">your.email@example.com</strong>.</p>
-        <div class="user-info">
-            Username: <span id="display-username"></span>
-        </div>
+        <p>Enter the verification code that was sent to you.</p>
         <form id="verify-form">
-            <input type="text" id="code-input" placeholder="Enter Verification Code" required autocomplete="off">
-            <button type="submit">Verify Account</button>
-            <p id="verify-message"></p>
+            <input type="text" id="code-input" placeholder="Verification Code" maxlength="6" required>
+            <button type="submit">Submit</button>
         </form>
     </div>
     <script src="backend.js"></script>
