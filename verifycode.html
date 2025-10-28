@@ -8,15 +8,18 @@
 </head>
 <body>
     <div class="verify-container">
-        <h2>Verify Your Account</h2>
-        <div class="user-info">
-            <p>Username: <span id="display-username"></span></p>
-            <p>Email: <span id="display-email"></span></p>
+        <div class="header">
+            <svg class="email-icon" xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 96 960 960" width="48"><path d="M160 816V296l320 200 320-200v520H160Zm80-440 240 150 240-150-240-150-240 150Zm0 360h480V456l-240 150-240-150v280Z"/></svg>
+            <h2>Check Your Email</h2>
         </div>
-        <p class="instruction">Enter the verification code that was sent to you.</p>
+        <p class="instruction">We have sent a verification code to <strong id="display-email">your.email@example.com</strong>.</p>
+        <div class="user-info">
+            Username: <span id="display-username"></span>
+        </div>
         <form id="verify-form">
-            <input type="text" id="code-input" placeholder="Verification Code" required>
-            <button type="submit">Submit</button>
+            <input type="text" id="code-input" placeholder="Enter Verification Code" required autocomplete="off">
+            <button type="submit">Verify Account</button>
+            <p id="verify-message"></p>
         </form>
     </div>
     <script src="backend.js"></script>
