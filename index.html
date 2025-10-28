@@ -67,4 +67,83 @@
                             <option value="4k" class="premium-option" disabled>4K UHD 👑</option>
                             <option value="8k" class="premium-option" disabled>8K Ultra 👑</option>
                         </select>
-                    </di
+                    </div>
+                    <button class="download-btn">Process Video</button>
+                </div>
+            </div>
+
+            <div id="photo-tab" class="media-tab-content">
+                <div class="media-preview-column">
+                    <div class="photo-frame">
+                        <img id="photo-preview" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25' viewBox='0 0 800 450'%3E%3Crect fill='%23333' width='800' height='450'/%3E%3Ctext fill='%23777' x='50%25' y='50%25' text-anchor='middle' font-family='sans-serif' font-size='24'%3EUpload a photo to begin%3C/text%3E%3C/svg%3E" alt="Preview">
+                    </div>
+                    <label for="file-upload-photo" class="upload-trigger-btn">Open Photo Library</label>
+                    <input id="file-upload-photo" type="file" accept="image/*">
+                </div>
+                <div class="media-options-column">
+                    <div class="option-group">
+                        <label>AI Scene Detection</label>
+                        <select id="photo-scene">
+                            <option value="auto">Auto-Detect (Recommended)</option>
+                            <option value="portrait">Portrait Studio</option>
+                            <option value="landscape">Landscape Vivid</option>
+                            <option value="night">Night Mode Pro</option>
+                        </select>
+                    </div>
+                    <div class="option-group">
+                        <label>Professional Grading</label>
+                        <select id="photo-grade">
+                            <option value="none">Natural</option>
+                            <option value="cinematic">Cinematic Warmth</option>
+                            <option value="matte">Classic Matte</option>
+                            <option value="hdr" class="premium-option" disabled>HDR Max 👑</option>
+                        </select>
+                    </div>
+                    <div class="option-group">
+                        <label>Output Quality</label>
+                        <select id="photo-quality">
+                            <option value="high">High Res JPG</option>
+                            <option value="lossless" class="premium-option" disabled>Lossless PNG 👑</option>
+                            <option value="raw" class="premium-option" disabled>RAW DNG 👑</option>
+                        </select>
+                    </div>
+                    <button class="download-btn">Export Photo</button>
+                </div>
+            </div>
+            
+            <div id="config-tab" class="media-tab-content locked-feature">
+                <div class="lock-overlay">
+                    <span class="lock-icon">👑</span>
+                    <h3>Premium Feature Only</h3>
+                    <p>Upgrade to unlock AI-powered video reconfiguration.</p>
+                    <a href="premiumlist.html" class="unlock-btn">See Premium Plans</a>
+                </div>
+                <div class="media-preview-column blur-content">
+                     <div class="video-placeholder"></div>
+                </div>
+                <div class="media-options-column blur-content">
+                    <div class="option-group">
+                        <label>Magic Prompt</label>
+                        <input type="text" placeholder="Describe your desired changes..." disabled>
+                    </div>
+                    <div class="option-group">
+                         <label>Render Quality</label>
+                         <select disabled><option>1080p</option></select>
+                    </div>
+                    <button class="download-btn" disabled>Generate</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="tutorial-section">
+        <h2>How to use the website.</h2>
+        <ul>
+            <li>Select the clip you want to use.</li>
+            <li>Wait for the loading clip animation to finish. <a href="premiumlist.html">Click here</a> for premium and faster loading.</li>
+            <li>After loading, you can change your video quality and format.</li>
+        </ul>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
