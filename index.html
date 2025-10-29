@@ -65,18 +65,18 @@
 
                 <label for="quality-select">Change quality:</label>
                 <select id="quality-select" name="quality">
-                    <option value="480p">480p</option>
-                    <option value="720p">720p</option>
-                    <option value="1080p">1080p (HD)</option>
-                    <option value="1440p" class="premium-option" disabled>1440p (2K) 👑</option>
-                    <option value="2160p" class="premium-option" disabled>2160p (4K) 👑</option>
-                    <option value="4320p" class="premium-option" disabled>4320p (8K) 👑</option>
+                    <option value="480p">480p (Standard)</option>
+                    <option value="720p">720p (HD)</option>
+                    <option value="1080p">1080p (Enhanced HD)</option>
+                    <option value="1440p" class="premium-option" disabled>1440p (Enhanced 2K) 👑</option>
+                    <option value="2160p" class="premium-option" disabled>2160p (Enhanced 4K) 👑</option>
                 </select>
 
-                <div class="optimization-option">
-                    <input type="checkbox" id="optimize-playback">
-                    <label for="optimize-playback">Optimize Playback (Reduce Lag/Delay)</label>
-                </div>
+                <label for="optimize-playback" class="toggle-switch-label">
+                    <input type="checkbox" id="optimize-playback" class="toggle-switch-input">
+                    <span class="toggle-switch-slider"></span>
+                    Optimize Playback (Reduce Lag/Delay)
+                </label>
 
                 <button id="download-btn" class="download-btn">Download</button>
             </div>
