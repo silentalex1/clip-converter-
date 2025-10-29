@@ -52,9 +52,16 @@
                 </div>
             </div>
             <div class="conversion-options">
+                <button id="object-remover-btn" class="tool-btn">Object Remover</button>
+                
+                <label class="toggle-switch-label">
+                    <input type="checkbox" id="majestic-mode-toggle" class="toggle-switch-input">
+                    <span class="toggle-switch-slider"></span>
+                    Theater/Majestic Mode
+                </label>
+
                 <label for="quality-select">Change quality:</label>
                 <select id="quality-select" name="quality">
-                    <option value="720p">720p</option>
                     <option value="1080p">1080p (HD)</option>
                     <option value="1440p" class="premium-option" disabled>1440p (2K) 👑</option>
                     <option value="2160p" class="premium-option" disabled>2160p (4K) 👑</option>
@@ -73,6 +80,6 @@
         </ul>
     </footer>
     <canvas id="canvas" style="display:none;"></canvas>
-    <script src="photo.js"></script>
+    <script src="photo.js" defer></script>
 </body>
 </html>
