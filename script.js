@@ -113,16 +113,24 @@ document.addEventListener('DOMContentLoaded', () => {
                     context.filter = 'contrast(105%) saturate(115%) brightness(102%)';
                 }
 
-                const audioContext = new AudioContext();
-                const source = audioContext.createMediaElementSource(videoElement);
-                const destination = audioContext.createMediaStreamDestination();
-                source.connect(destination);
-                const audioTrack = destination.stream.getAudioTracks()[0];
+                let audioTrack;
+                try {
+                    const audioContext = new AudioContext();
+                    const source = audioContext.createMediaElementSource(videoElement);
+                    const destination = audioContext.createMediaStreamDestination();
+                    source.connect(destination);
+                    audioTrack = destination.stream.getAudioTracks()[0];
+                } catch (e) {
+                    console.warn("Could not process audio track.");
+                }
                 
                 const videoStream = canvas.captureStream(targetFrameRate || undefined);
                 const videoTrack = videoStream.getVideoTracks()[0];
                 
-                const combinedStream = new MediaStream([videoTrack, audioTrack]);
+                const streamTracks = [videoTrack];
+                if(audioTrack) streamTracks.push(audioTrack);
+                
+                const combinedStream = new MediaStream(streamTracks);
 
                 const mimeType = 'video/mp4';
                 if (!MediaRecorder.isTypeSupported(mimeType)) {
