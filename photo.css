@@ -220,9 +220,42 @@ input[type="file"] { display: none; }
     height: 100%;
     background: transparent;
 }
-.brightness-control { margin-top: 15px; }
-.brightness-control label { font-weight: 600; }
-#brightness-slider { width: 80%; }
+.brightness-control { 
+    margin-top: 20px;
+    background: #2a2a2a;
+    padding: 10px 15px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.brightness-icon { width: 24px; height: 24px; fill: var(--picture-color); }
+#brightness-slider {
+    width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    background: linear-gradient(90deg, #444, #fff);
+    height: 8px;
+    border-radius: 4px;
+    outline: none;
+}
+#brightness-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    cursor: pointer;
+}
+#brightness-slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+}
 
 .conversion-options {
     display: flex;
