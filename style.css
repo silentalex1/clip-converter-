@@ -221,6 +221,11 @@ input[type="file"] { display: none; }
     padding: 12px 25px;
     font-size: 1.1rem;
 }
+.download-btn:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+    transform: none;
+}
 
 .info-sections { background-color: var(--light-bg); padding: 50px 0; }
 .features-section, .suggestions-section {
