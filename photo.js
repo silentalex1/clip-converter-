@@ -6,8 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadingPercent = document.querySelector('.loading-percent');
     const conversionSection = document.getElementById('conversion-section');
     const downloadBtn = document.getElementById('download-btn');
-    const sliderInput = document.createElement('input');
-    sliderInput.type = 'range';
     const afterImageContainer = document.getElementById('after-image-container');
     const sliderLine = document.querySelector('.slider-line');
     const sliderHandle = document.querySelector('.slider-handle');
@@ -19,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const majesticModeToggle = document.getElementById('majestic-mode-toggle');
     const brightnessSlider = document.getElementById('brightness-slider');
     const qualitySelect = document.getElementById('quality-select');
+    const removerBrush = document.querySelector('.remover-brush');
 
     let isObjectRemoverActive = false;
     let isPainting = false;
@@ -31,10 +30,10 @@ document.addEventListener('DOMContentLoaded', () => {
         context.textAlign = "right";
         context.textBaseline = "bottom";
         const textMetrics = context.measureText(watermarkText);
-        const padding = fontSize * 0.5;
-        context.fillStyle = "rgba(0, 0, 0, 0.4)";
-        context.fillRect(width - textMetrics.width - padding * 2, height - fontSize - padding * 2, textMetrics.width + padding, fontSize + padding);
-        context.fillStyle = "rgba(255, 255, 255, 0.7)";
+        const padding = fontSize * 0.4;
+        context.fillStyle = "rgba(0, 0, 0, 0.5)";
+        context.fillRect(width - textMetrics.width - padding * 2, height - fontSize - padding * 2, textMetrics.width + padding * 2, fontSize + padding * 2);
+        context.fillStyle = "rgba(255, 255, 255, 0.8)";
         context.fillText(watermarkText, width - padding, height - padding);
     };
 
@@ -52,7 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 clearInterval(loadingInterval);
                 const reader = new FileReader();
                 reader.onload = (e) => {
-                    const imageUrl = e.target.result;
                     currentImage.onload = () => {
                         const context = canvas.getContext('2d');
                         canvas.width = currentImage.naturalWidth;
@@ -61,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         applyWatermark(context, canvas.width, canvas.height);
                         const watermarkedUrl = canvas.toDataURL();
                         
-                        beforeImage.src = imageUrl;
+                        beforeImage.src = e.target.result;
                         afterImage.src = watermarkedUrl;
                         currentImage.src = watermarkedUrl;
 
@@ -71,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             setTimeout(() => conversionSection.style.opacity = '1', 50);
                         }, 500);
                     };
-                    currentImage.src = imageUrl;
+                    currentImage.src = e.target.result;
                 };
                 reader.readAsDataURL(file);
             }
@@ -86,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
         sliderHandle.style.left = val;
     };
 
-    const handleSliderInteraction = (clientX) => {
+    const handleInteraction = (clientX) => {
         const rect = comparisonSlider.getBoundingClientRect();
         let value = ((clientX - rect.left) / rect.width) * 100;
         value = Math.max(0, Math.min(100, value));
@@ -98,23 +96,28 @@ document.addEventListener('DOMContentLoaded', () => {
             isPainting = true;
             removeObjectAt(e.clientX, e.clientY);
         } else {
-            handleSliderInteraction(e.clientX);
+            handleInteraction(e.clientX);
             window.addEventListener('mousemove', onMouseMove);
             window.addEventListener('mouseup', () => window.removeEventListener('mousemove', onMouseMove), { once: true });
         }
     });
 
     comparisonSlider.addEventListener('mousemove', (e) => {
-        if (isObjectRemoverActive && isPainting) removeObjectAt(e.clientX, e.clientY);
+        if (isObjectRemoverActive) {
+            removerBrush.style.left = `${e.clientX - comparisonSlider.getBoundingClientRect().left}px`;
+            removerBrush.style.top = `${e.clientY - comparisonSlider.getBoundingClientRect().top}px`;
+            if (isPainting) removeObjectAt(e.clientX, e.clientY);
+        }
     });
     
     comparisonSlider.addEventListener('touchstart', (e) => {
         e.preventDefault();
+        const touch = e.touches[0];
         if (isObjectRemoverActive) {
             isPainting = true;
-            removeObjectAt(e.touches[0].clientX, e.touches[0].clientY);
+            removeObjectAt(touch.clientX, touch.clientY);
         } else {
-            handleSliderInteraction(e.touches[0].clientX);
+            handleInteraction(touch.clientX);
             window.addEventListener('touchmove', onTouchMove, { passive: false });
             window.addEventListener('touchend', () => window.removeEventListener('touchmove', onTouchMove), { once: true });
         }
@@ -122,14 +125,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     comparisonSlider.addEventListener('touchmove', (e) => {
         e.preventDefault();
-        if (isObjectRemoverActive && isPainting) removeObjectAt(e.touches[0].clientX, e.touches[0].clientY);
+        const touch = e.touches[0];
+        removerBrush.style.left = `${touch.clientX - comparisonSlider.getBoundingClientRect().left}px`;
+        removerBrush.style.top = `${touch.clientY - comparisonSlider.getBoundingClientRect().top}px`;
+        if (isObjectRemoverActive && isPainting) removeObjectAt(touch.clientX, touch.clientY);
     }, { passive: false });
 
     window.addEventListener('mouseup', () => { isPainting = false; });
     window.addEventListener('touchend', () => { isPainting = false; });
 
-    const onMouseMove = (e) => handleSliderInteraction(e.clientX);
-    const onTouchMove = (e) => { e.preventDefault(); handleSliderInteraction(e.touches[0].clientX); };
+    const onMouseMove = (e) => handleInteraction(e.clientX);
+    const onTouchMove = (e) => { e.preventDefault(); handleInteraction(e.touches[0].clientX); };
 
     objectRemoverBtn.addEventListener('click', () => {
         isObjectRemoverActive = !isObjectRemoverActive;
