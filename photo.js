@@ -16,6 +16,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const comparisonSlider = document.getElementById('comparison-slider');
     const objectRemoverBtn = document.getElementById('object-remover-btn');
     const majesticModeToggle = document.getElementById('majestic-mode-toggle');
+    const brightnessSlider = document.getElementById('brightness-slider');
+    const qualitySelect = document.getElementById('quality-select');
 
     let isObjectRemoverActive = false;
     let currentImage = new Image();
@@ -51,20 +53,33 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const moveSlider = (value) => {
         if (isObjectRemoverActive) return;
-        afterImageContainer.style.width = `${value}%`;
-        sliderLine.style.left = `${value}%`;
-        sliderHandle.style.left = `${value}%`;
+        const val = `${value}%`;
+        afterImageContainer.style.width = val;
+        sliderLine.style.left = val;
+        sliderHandle.style.left = val;
     };
 
-    sliderInput.addEventListener('input', (e) => moveSlider(e.target.value));
-    sliderInput.addEventListener('touchmove', (e) => {
-        e.preventDefault();
+    const handleSliderInteraction = (clientX) => {
         const rect = comparisonSlider.getBoundingClientRect();
-        let value = ((e.touches[0].clientX - rect.left) / rect.width) * 100;
+        let value = ((clientX - rect.left) / rect.width) * 100;
         value = Math.max(0, Math.min(100, value));
         sliderInput.value = value;
         moveSlider(value);
+    };
+
+    sliderInput.addEventListener('input', (e) => moveSlider(e.target.value));
+    comparisonSlider.addEventListener('mousedown', (e) => {
+        handleSliderInteraction(e.clientX);
+        window.addEventListener('mousemove', onMouseMove);
+        window.addEventListener('mouseup', () => window.removeEventListener('mousemove', onMouseMove));
     });
+    comparisonSlider.addEventListener('touchstart', (e) => {
+        handleSliderInteraction(e.touches[0].clientX);
+        window.addEventListener('touchmove', onTouchMove);
+        window.addEventListener('touchend', () => window.removeEventListener('touchmove', onTouchMove));
+    });
+    const onMouseMove = (e) => handleSliderInteraction(e.clientX);
+    const onTouchMove = (e) => handleSliderInteraction(e.touches[0].clientX);
 
     objectRemoverBtn.addEventListener('click', () => {
         isObjectRemoverActive = !isObjectRemoverActive;
@@ -84,20 +99,22 @@ document.addEventListener('DOMContentLoaded', () => {
     majesticModeToggle.addEventListener('change', () => {
         afterImage.classList.toggle('majestic', majesticModeToggle.checked);
     });
+    
+    brightnessSlider.addEventListener('input', (e) => {
+        document.documentElement.style.setProperty('--brightness-filter', `brightness(${e.target.value}%)`);
+    });
 
     function removeObjectAt(x, y) {
-        const brushSize = 30;
+        const brushSize = 40;
         const context = canvas.getContext('2d');
         canvas.width = currentImage.naturalWidth;
         canvas.height = currentImage.naturalHeight;
         context.drawImage(currentImage, 0, 0);
         
-        const startX = Math.max(0, x - brushSize / 2);
-        const startY = Math.max(0, y - brushSize / 2);
-        const endX = Math.min(canvas.width, x + brushSize / 2);
-        const endY = Math.min(canvas.height, y + brushSize / 2);
-        
-        context.clearRect(startX, startY, endX - startX, endY - startY);
+        context.beginPath();
+        context.arc(x, y, brushSize / 2, 0, Math.PI * 2, false);
+        context.clip();
+        context.clearRect(0, 0, canvas.width, canvas.height);
         
         const newImageUrl = canvas.toDataURL();
         afterImage.src = newImageUrl;
@@ -111,18 +128,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const context = canvas.getContext('2d');
-        canvas.width = currentImage.naturalWidth;
-        canvas.height = currentImage.naturalHeight;
+        const qualityValue = parseInt(qualitySelect.value, 10);
+        const ratio = currentImage.naturalWidth / currentImage.naturalHeight;
         
-        let filters = 'contrast(110%) saturate(120%) brightness(105%)';
+        canvas.width = (ratio >= 1) ? qualityValue : qualityValue * ratio;
+        canvas.height = (ratio < 1) ? qualityValue : qualityValue / ratio;
+
+        let filters = `brightness(${brightnessSlider.value}%) contrast(115%) saturate(120%)`;
         if (majesticModeToggle.checked) {
-            filters = 'contrast(120%) saturate(130%) brightness(105%)';
+            filters = `brightness(${brightnessSlider.value}%) contrast(125%) saturate(140%) sepia(15%)`;
         }
         context.filter = filters;
-        context.drawImage(currentImage, 0, 0);
+        context.drawImage(currentImage, 0, 0, canvas.width, canvas.height);
         
         const link = document.createElement('a');
-        link.download = 'enhanced-photo.png';
+        link.download = `enhanced-photo-${qualityValue}p.png`;
         link.href = canvas.toDataURL('image/png');
         link.click();
     });
