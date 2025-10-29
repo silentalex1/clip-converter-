@@ -143,6 +143,7 @@ input[type="file"] { display: none; }
     border-radius: 10px;
     overflow: hidden;
     cursor: col-resize;
+    touch-action: none;
 }
 .comparison-slider.remover-active { cursor: crosshair; }
 .comparison-slider.slider-disabled { cursor: not-allowed; }
@@ -161,12 +162,13 @@ input[type="file"] { display: none; }
     height: 100%;
     width: 50%;
     overflow: hidden;
+    filter: var(--brightness-filter, brightness(1));
 }
 #after-image {
-    filter: contrast(110%) saturate(120%) brightness(105%);
+    filter: var(--enhance-filter, contrast(115%) saturate(120%));
 }
 #after-image.majestic {
-    filter: contrast(120%) saturate(130%) brightness(105%);
+    filter: var(--enhance-filter, contrast(125%) saturate(140%)) sepia(15%);
 }
 .slider-line, .slider-handle, .slider-input {
     transition: opacity 0.3s ease;
@@ -218,6 +220,9 @@ input[type="file"] { display: none; }
     height: 100%;
     background: transparent;
 }
+.brightness-control { margin-top: 15px; }
+.brightness-control label { font-weight: 600; }
+#brightness-slider { width: 80%; }
 
 .conversion-options {
     display: flex;
@@ -225,19 +230,23 @@ input[type="file"] { display: none; }
     width: 100%;
     max-width: 400px;
     text-align: left;
-    gap: 15px;
+    gap: 20px;
 }
 .tool-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
     width: 100%;
-    padding: 10px;
+    padding: 12px;
     font-size: 1rem;
     font-weight: 600;
     border: 2px solid var(--primary-color);
-    background-color: transparent;
+    background-color: var(--dark-bg);
     color: var(--text-color);
     border-radius: 10px;
     cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition: background-color 0.3s ease, border-color 0.3s, color 0.3s ease;
 }
 .tool-btn.active {
     background-color: var(--active-color);
@@ -249,6 +258,9 @@ input[type="file"] { display: none; }
     align-items: center;
     gap: 10px;
     cursor: pointer;
+    background: #2a2a2a;
+    padding: 10px 15px;
+    border-radius: 10px;
 }
 .toggle-switch-input { display: none; }
 .toggle-switch-slider {
