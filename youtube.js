@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loadingBarWrapper.style.display = 'block';
 
         let currentPercent = 0;
-        const estimatedTime = 4000; 
+        const estimatedTime = 3000; 
         const intervalStepTime = estimatedTime / 100;
 
         const loadingInterval = setInterval(() => {
@@ -47,11 +47,9 @@ document.addEventListener('DOMContentLoaded', () => {
             alert("Please submit a video link first.");
             return;
         }
-        alert("Your file is being prepared. The download will start shortly.");
         
         const formatSelect = document.getElementById('convert-select').value;
         const qualitySelect = document.getElementById('quality-select').value;
-        
         const fileName = `youtube-${videoId}-${qualitySelect}.${formatSelect}`;
 
         const a = document.createElement('a');
