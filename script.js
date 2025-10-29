@@ -89,65 +89,72 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function processVideo(videoFile) {
         return new Promise((resolve, reject) => {
-            const video = document.createElement('video');
-            video.preload = 'metadata';
-            video.muted = true;
-            video.src = URL.createObjectURL(videoFile);
+            const videoElement = document.createElement('video');
+            videoElement.preload = 'metadata';
+            videoElement.muted = true;
+            videoElement.src = URL.createObjectURL(videoFile);
             
-            video.onloadedmetadata = () => {
+            videoElement.onloadedmetadata = async () => {
                 const targetFrameRate = optimizeCheckbox.checked ? 30 : 0;
                 const quality = qualitySelect.value;
-                const ratio = video.videoWidth / video.videoHeight;
+                const ratio = videoElement.videoWidth / videoElement.videoHeight;
 
                 if (quality !== 'source') {
                     const targetHeight = parseInt(quality, 10);
                     canvas.height = targetHeight;
-                    canvas.width = targetHeight * ratio;
+                    canvas.width = Math.round(targetHeight * ratio / 2) * 2;
                 } else {
-                    canvas.width = video.videoWidth;
-                    canvas.height = video.videoHeight;
+                    canvas.width = videoElement.videoWidth;
+                    canvas.height = videoElement.videoHeight;
                 }
 
                 const context = canvas.getContext('2d');
                 if (quality === '1080') {
-                    context.filter = 'contrast(105%) saturate(120%) brightness(102%) sharpen(10%)';
+                    context.filter = 'contrast(105%) saturate(115%) brightness(102%)';
                 }
+
+                const audioContext = new AudioContext();
+                const source = audioContext.createMediaElementSource(videoElement);
+                const destination = audioContext.createMediaStreamDestination();
+                source.connect(destination);
+                const audioTrack = destination.stream.getAudioTracks()[0];
+                
+                const videoStream = canvas.captureStream(targetFrameRate || undefined);
+                const videoTrack = videoStream.getVideoTracks()[0];
+                
+                const combinedStream = new MediaStream([videoTrack, audioTrack]);
 
                 const mimeType = 'video/mp4';
                 if (!MediaRecorder.isTypeSupported(mimeType)) {
                     return reject(new Error(`${mimeType} format is not supported by your browser.`));
                 }
 
-                const stream = canvas.captureStream(targetFrameRate || undefined);
-                const recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 5000000 });
+                const recorder = new MediaRecorder(combinedStream, { mimeType, videoBitsPerSecond: 8000000 });
                 const chunks = [];
                 let framesProcessed = 0;
 
                 recorder.ondataavailable = (e) => chunks.push(e.data);
                 recorder.onstop = () => {
                     const blob = new Blob(chunks, { type: mimeType });
-                    URL.revokeObjectURL(video.src);
+                    URL.revokeObjectURL(videoElement.src);
                     resolve(blob);
                 };
-                recorder.onerror = (e) => {
-                    URL.revokeObjectURL(video.src);
-                    reject(e);
-                };
+                recorder.onerror = (e) => reject(e);
                 
                 let currentTime = 0;
-                const duration = video.duration;
+                const duration = videoElement.duration;
                 const frameInterval = 1 / (targetFrameRate || 30);
                 
                 const processNextFrame = () => {
                     if (currentTime < duration) {
-                        video.currentTime = currentTime;
+                        videoElement.currentTime = currentTime;
                     } else {
-                        recorder.stop();
+                        if(recorder.state === "recording") recorder.stop();
                     }
                 };
                 
-                video.onseeked = () => {
-                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                videoElement.onseeked = () => {
+                    context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
                     framesProcessed++;
                     processingStatus.textContent = `Processing... ${Math.round((currentTime / duration) * 100)}%`;
                     currentTime += frameInterval; 
@@ -155,9 +162,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
                 
                 recorder.start();
-                processNextFrame();
+                videoElement.play().then(processNextFrame).catch(reject);
             };
-            video.onerror = () => reject(new Error('Failed to load video. The file may be corrupt.'));
+            videoElement.onerror = () => reject(new Error('Failed to load video. The file may be corrupt.'));
         });
     }
 
@@ -179,7 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
         navbar.scrollLeft = scrollLeft - walk;
     });
 
-    const formats = ['mov', 'avi', 'mkv', 'gif', 'webm'];
+    const formats = ['mov', 'mkv', 'avi', 'wav', 'flac'];
     let formatIndex = 0;
     setInterval(() => {
         formatSpinner.classList.add('fade');
