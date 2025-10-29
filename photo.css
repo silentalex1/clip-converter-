@@ -166,9 +166,10 @@ input[type="file"] { display: none; }
 }
 #after-image {
     filter: var(--enhance-filter, contrast(115%) saturate(120%));
+    transition: filter 0.3s ease;
 }
 #after-image.majestic {
-    filter: var(--enhance-filter, contrast(125%) saturate(140%)) sepia(15%);
+    filter: var(--enhance-filter, contrast(120%) saturate(135%)) sepia(10%);
 }
 .slider-line, .slider-handle, .slider-input {
     transition: opacity 0.3s ease;
