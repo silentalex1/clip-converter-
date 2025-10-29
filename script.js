@@ -4,66 +4,120 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadingBarWrapper = document.querySelector('.loading-bar-wrapper');
     const loadingBar = document.querySelector('.loading-bar');
     const loadingPercent = document.querySelector('.loading-percent');
+    const processingStatus = document.getElementById('processing-status');
     const conversionSection = document.querySelector('.conversion-section');
     const videoPreview = document.getElementById('video-preview');
-    const downloadBtn = document.querySelector('.download-btn');
-    const navUser = document.getElementById('nav-user');
-    const signinBtn = document.getElementById('signin-btn');
+    const downloadBtn = document.getElementById('download-btn');
     const navbar = document.getElementById('navbar');
     const formatSpinner = document.getElementById('format-spinner');
+    const optimizeCheckbox = document.getElementById('optimize-playback');
+    const canvas = document.getElementById('canvas');
 
-    const loggedInUser = localStorage.getItem('clipConverterUser');
-    if (loggedInUser) {
-        navUser.textContent = loggedInUser;
-        signinBtn.style.display = 'none';
-    }
+    let originalFileBlob = null;
 
     fileInput.addEventListener('change', (event) => {
         const file = event.target.files[0];
         if (!file) return;
+        originalFileBlob = file;
         uploadContainer.style.display = 'none';
         loadingBarWrapper.style.display = 'block';
         let currentPercent = 0;
-        const fileSizeMB = file.size / (1024 * 1024);
-        const estimatedTime = Math.max(2000, fileSizeMB * 150); 
-        const intervalStepTime = estimatedTime / 100;
-
-        const loadingInterval = setInterval(() => {
+        const interval = setInterval(() => {
             currentPercent++;
             loadingBar.style.width = `${currentPercent}%`;
             loadingPercent.textContent = `${currentPercent}%`;
             if (currentPercent >= 100) {
-                clearInterval(loadingInterval);
+                clearInterval(interval);
                 setTimeout(() => {
                     loadingBarWrapper.style.display = 'none';
                     conversionSection.style.display = 'flex';
                     conversionSection.style.opacity = '1';
                     videoPreview.src = URL.createObjectURL(file);
-                    videoPreview.dataset.fileName = file.name.split('.').slice(0, -1).join('.');
-                    videoPreview.play();
                 }, 500);
             }
-        }, intervalStepTime);
+        }, 30);
     });
 
-    downloadBtn.addEventListener('click', () => {
-        const selectedFormat = document.getElementById('convert-select').value;
-        const originalName = videoPreview.dataset.fileName || 'converted';
-        if (!videoPreview.src) {
-            alert("Please select a file first to begin.");
+    downloadBtn.addEventListener('click', async () => {
+        if (!originalFileBlob) {
+            alert("Please select a file first.");
             return;
         }
+
+        downloadBtn.disabled = true;
+        processingStatus.textContent = "Preparing your download...";
+
+        if (!optimizeCheckbox.checked) {
+            downloadFile(URL.createObjectURL(originalFileBlob));
+            return;
+        }
+
+        processingStatus.textContent = "Optimizing video... this may take a moment.";
+        try {
+            const optimizedBlob = await optimizeVideo(originalFileBlob);
+            downloadFile(URL.createObjectURL(optimizedBlob));
+        } catch (error) {
+            console.error("Optimization failed:", error);
+            processingStatus.textContent = "Optimization failed. Downloading original file.";
+            downloadFile(URL.createObjectURL(originalFileBlob));
+        }
+    });
+    
+    function downloadFile(url) {
+        const selectedFormat = document.getElementById('convert-select').value;
+        const originalName = originalFileBlob.name.split('.').slice(0, -1).join('.');
         const a = document.createElement('a');
-        a.href = videoPreview.src;
-        a.download = `${originalName}.${selectedFormat}`;
+        a.href = url;
+        a.download = `${originalName}-optimized.${selectedFormat}`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
-    });
+        URL.revokeObjectURL(url);
+        processingStatus.textContent = "";
+        downloadBtn.disabled = false;
+    }
+
+    async function optimizeVideo(videoFile) {
+        return new Promise((resolve, reject) => {
+            const video = document.createElement('video');
+            video.src = URL.createObjectURL(videoFile);
+            
+            video.onloadedmetadata = () => {
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                const context = canvas.getContext('2d');
+                const stream = canvas.captureStream(30);
+                const recorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+                const chunks = [];
+
+                recorder.ondataavailable = (e) => chunks.push(e.data);
+                recorder.onstop = () => resolve(new Blob(chunks, { type: 'video/webm' }));
+                recorder.onerror = reject;
+
+                let currentTime = 0;
+                video.currentTime = currentTime;
+
+                video.onseeked = () => {
+                    if (currentTime < video.duration) {
+                        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                        currentTime += 1/30;
+                        video.currentTime = currentTime;
+                    } else {
+                        recorder.stop();
+                        video.pause();
+                    }
+                };
+                
+                recorder.start();
+                video.play();
+                video.pause();
+            };
+            video.onerror = reject;
+        });
+    }
 
     let isDown = false;
-    let startX;
-    let scrollLeft;
+    let startX, scrollLeft;
     navbar.addEventListener('mousedown', (e) => {
         isDown = true;
         navbar.style.cursor = 'grabbing';
