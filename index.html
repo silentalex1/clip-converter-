@@ -49,24 +49,20 @@
 
         <section class="conversion-section">
             <div class="video-preview-wrapper">
-                <video id="video-preview" controls></video>
+                <video id="video-preview" controls playsinline></video>
             </div>
             <div class="conversion-options">
                 <label for="convert-select">Convert to:</label>
                 <select id="convert-select" name="format">
-                    <option value="mp3">MP3</option>
                     <option value="mp4">MP4</option>
                     <option value="mov">MOV</option>
-                    <option value="avi">AVI</option>
                     <option value="mkv">MKV</option>
-                    <option value="wav">WAV</option>
-                    <option value="flac">FLAC</option>
+                    <option value="avi">AVI</option>
                 </select>
 
                 <label for="quality-select">Change quality:</label>
                 <select id="quality-select" name="quality">
-                    <option value="480p">480p (Standard)</option>
-                    <option value="720p">720p (HD)</option>
+                    <option value="source">Source Quality</option>
                     <option value="1080p">1080p (Enhanced HD)</option>
                     <option value="1440p" class="premium-option" disabled>1440p (Enhanced 2K) 👑</option>
                     <option value="2160p" class="premium-option" disabled>2160p (Enhanced 4K) 👑</option>
