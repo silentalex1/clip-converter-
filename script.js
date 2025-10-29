@@ -13,6 +13,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const optimizeCheckbox = document.getElementById('optimize-playback');
     const canvas = document.getElementById('canvas');
 
+    if (!fileInput) return;
+
     let originalFileBlob = null;
 
     fileInput.addEventListener('change', (event) => {
@@ -67,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const selectedFormat = document.getElementById('convert-select').value;
         const originalName = originalFileBlob.name.split('.').slice(0, -1).join('.');
         const a = document.createElement('a');
-        a.href = url;
+a.href = url;
         a.download = `${originalName}-optimized.${selectedFormat}`;
         document.body.appendChild(a);
         a.click();
@@ -80,6 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function optimizeVideo(videoFile) {
         return new Promise((resolve, reject) => {
             const video = document.createElement('video');
+            video.preload = 'metadata';
             video.src = URL.createObjectURL(videoFile);
             
             video.onloadedmetadata = () => {
@@ -91,28 +94,40 @@ document.addEventListener('DOMContentLoaded', () => {
                 const chunks = [];
 
                 recorder.ondataavailable = (e) => chunks.push(e.data);
-                recorder.onstop = () => resolve(new Blob(chunks, { type: 'video/webm' }));
-                recorder.onerror = reject;
-
+                recorder.onstop = () => {
+                    const blob = new Blob(chunks, { type: 'video/webm' });
+                    URL.revokeObjectURL(video.src);
+                    resolve(blob);
+                };
+                recorder.onerror = (e) => {
+                    URL.revokeObjectURL(video.src);
+                    reject(e);
+                };
+                
                 let currentTime = 0;
-                video.currentTime = currentTime;
-
-                video.onseeked = () => {
+                video.currentTime = 0;
+                
+                const drawFrame = () => {
                     if (currentTime < video.duration) {
-                        context.drawImage(video, 0, 0, canvas.width, canvas.height);
-                        currentTime += 1/30;
                         video.currentTime = currentTime;
                     } else {
                         recorder.stop();
-                        video.pause();
                     }
                 };
                 
+                video.onseeked = () => {
+                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    currentTime += 1/30; 
+                    drawFrame();
+                };
+                
                 recorder.start();
-                video.play();
-                video.pause();
+                drawFrame();
             };
-            video.onerror = reject;
+            video.onerror = (e) => {
+                URL.revokeObjectURL(video.src);
+                reject(e);
+            };
         });
     }
 
