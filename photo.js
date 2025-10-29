@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const qualitySelect = document.getElementById('quality-select');
 
     let isObjectRemoverActive = false;
+    let isPainting = false;
     let currentImage = new Image();
 
     fileInput.addEventListener('change', (event) => {
@@ -67,33 +68,32 @@ document.addEventListener('DOMContentLoaded', () => {
         moveSlider(value);
     };
 
-    sliderInput.addEventListener('input', (e) => moveSlider(e.target.value));
     comparisonSlider.addEventListener('mousedown', (e) => {
-        handleSliderInteraction(e.clientX);
-        window.addEventListener('mousemove', onMouseMove);
-        window.addEventListener('mouseup', () => window.removeEventListener('mousemove', onMouseMove));
+        if (isObjectRemoverActive) {
+            isPainting = true;
+            removeObjectAt(e.clientX, e.clientY);
+        } else {
+            handleSliderInteraction(e.clientX);
+            window.addEventListener('mousemove', onMouseMove);
+            window.addEventListener('mouseup', () => window.removeEventListener('mousemove', onMouseMove));
+        }
     });
-    comparisonSlider.addEventListener('touchstart', (e) => {
-        handleSliderInteraction(e.touches[0].clientX);
-        window.addEventListener('touchmove', onTouchMove);
-        window.addEventListener('touchend', () => window.removeEventListener('touchmove', onTouchMove));
+
+    comparisonSlider.addEventListener('mousemove', (e) => {
+        if (isObjectRemoverActive && isPainting) {
+            removeObjectAt(e.clientX, e.clientY);
+        }
     });
+
+    window.addEventListener('mouseup', () => { isPainting = false; });
+
     const onMouseMove = (e) => handleSliderInteraction(e.clientX);
-    const onTouchMove = (e) => handleSliderInteraction(e.touches[0].clientX);
 
     objectRemoverBtn.addEventListener('click', () => {
         isObjectRemoverActive = !isObjectRemoverActive;
         objectRemoverBtn.classList.toggle('active', isObjectRemoverActive);
         comparisonSlider.classList.toggle('slider-disabled', isObjectRemoverActive);
         comparisonSlider.classList.toggle('remover-active', isObjectRemoverActive);
-    });
-
-    comparisonSlider.addEventListener('click', (e) => {
-        if (!isObjectRemoverActive) return;
-        const rect = comparisonSlider.getBoundingClientRect();
-        const x = (e.clientX - rect.left) * (currentImage.naturalWidth / rect.width);
-        const y = (e.clientY - rect.top) * (currentImage.naturalHeight / rect.height);
-        removeObjectAt(x, y);
     });
 
     majesticModeToggle.addEventListener('change', () => {
@@ -104,17 +104,35 @@ document.addEventListener('DOMContentLoaded', () => {
         document.documentElement.style.setProperty('--brightness-filter', `brightness(${e.target.value}%)`);
     });
 
-    function removeObjectAt(x, y) {
-        const brushSize = 40;
+    function removeObjectAt(clientX, clientY) {
+        const rect = comparisonSlider.getBoundingClientRect();
+        const x = (clientX - rect.left) * (currentImage.naturalWidth / rect.width);
+        const y = (clientY - rect.top) * (currentImage.naturalHeight / rect.height);
+        
         const context = canvas.getContext('2d');
         canvas.width = currentImage.naturalWidth;
         canvas.height = currentImage.naturalHeight;
         context.drawImage(currentImage, 0, 0);
-        
+
+        const brushSize = 40;
+        const sampleRingRadius = brushSize * 1.5;
+        let r = 0, g = 0, b = 0, count = 0;
+
+        for (let i = 0; i < 360; i += 30) {
+            const angle = i * Math.PI / 180;
+            const sx = x + Math.cos(angle) * sampleRingRadius;
+            const sy = y + Math.sin(angle) * sampleRingRadius;
+            if (sx > 0 && sx < canvas.width && sy > 0 && sy < canvas.height) {
+                const pixel = context.getImageData(sx, sy, 1, 1).data;
+                r += pixel[0]; g += pixel[1]; b += pixel[2];
+                count++;
+            }
+        }
+
+        context.fillStyle = `rgb(${r/count}, ${g/count}, ${b/count})`;
         context.beginPath();
         context.arc(x, y, brushSize / 2, 0, Math.PI * 2, false);
-        context.clip();
-        context.clearRect(0, 0, canvas.width, canvas.height);
+        context.fill();
         
         const newImageUrl = canvas.toDataURL();
         afterImage.src = newImageUrl;
@@ -131,18 +149,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const qualityValue = parseInt(qualitySelect.value, 10);
         const ratio = currentImage.naturalWidth / currentImage.naturalHeight;
         
-        canvas.width = (ratio >= 1) ? qualityValue : qualityValue * ratio;
-        canvas.height = (ratio < 1) ? qualityValue : qualityValue / ratio;
+        if (qualitySelect.value === 'original') {
+            canvas.width = currentImage.naturalWidth;
+            canvas.height = currentImage.naturalHeight;
+        } else {
+            canvas.width = (ratio >= 1) ? qualityValue : Math.round(qualityValue * ratio);
+            canvas.height = (ratio < 1) ? qualityValue : Math.round(qualityValue / ratio);
+        }
 
         let filters = `brightness(${brightnessSlider.value}%) contrast(115%) saturate(120%)`;
         if (majesticModeToggle.checked) {
-            filters = `brightness(${brightnessSlider.value}%) contrast(125%) saturate(140%) sepia(15%)`;
+            filters = `brightness(${brightnessSlider.value}%) contrast(125%) saturate(140%) sepia(10%)`;
         }
         context.filter = filters;
         context.drawImage(currentImage, 0, 0, canvas.width, canvas.height);
         
         const link = document.createElement('a');
-        link.download = `enhanced-photo-${qualityValue}p.png`;
+        link.download = `enhanced-photo-${qualitySelect.value}.png`;
         link.href = canvas.toDataURL('image/png');
         link.click();
     });
