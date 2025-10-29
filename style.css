@@ -187,6 +187,7 @@ input[type="file"] { display: none; }
     gap: 10px;
     cursor: pointer;
     font-weight: 400;
+    margin-top: 20px;
 }
 .toggle-switch-input { display: none; }
 .toggle-switch-slider {
@@ -253,7 +254,8 @@ input[type="file"] { display: none; }
     pointer-events: none;
     border-radius: 15px;
     border: 2px solid transparent;
-    transition: border-color 0.4s ease, transform 0.4s ease;
+    transition: border-color 0.4s ease, transform 0.4s ease, opacity 0.4s;
+    opacity: 0;
 }
 .feature-box::before {
     border-top-color: var(--primary-color);
@@ -265,8 +267,8 @@ input[type="file"] { display: none; }
     border-right-color: var(--primary-color);
     transform: scaleY(0);
 }
-.feature-box:hover::before { transform: scaleX(1); }
-.feature-box:hover::after { transform: scaleY(1); }
+.feature-box:hover::before { transform: scaleX(1); opacity: 1; }
+.feature-box:hover::after { transform: scaleY(1); opacity: 1; }
 
 .feature-box h3 {
     margin-top: 0;
