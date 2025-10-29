@@ -50,9 +50,16 @@
                     <div class="slider-handle"></div>
                     <input type="range" min="0" max="100" value="50" class="slider-input" id="slider-input">
                 </div>
+                <div class="brightness-control">
+                    <label for="brightness-slider">Brightness</label>
+                    <input type="range" min="50" max="150" value="100" id="brightness-slider">
+                </div>
             </div>
             <div class="conversion-options">
-                <button id="object-remover-btn" class="tool-btn">Object Remover</button>
+                <button id="object-remover-btn" class="tool-btn">
+                    <svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M15,16H13V13H10V11H13V8H15V11H18V13H15V16M20,2H4A2,2 0 0,0 2,4V20A2,2 0 0,0 4,22H20A2,2 0 0,0 22,20V4A2,2 0 0,0 20,2M20,20H4V4H20V20Z"></path></svg>
+                    Object Remover
+                </button>
                 
                 <label class="toggle-switch-label">
                     <input type="checkbox" id="majestic-mode-toggle" class="toggle-switch-input">
@@ -60,11 +67,12 @@
                     Theater/Majestic Mode
                 </label>
 
-                <label for="quality-select">Change quality:</label>
+                <label for="quality-select">Download Quality:</label>
                 <select id="quality-select" name="quality">
-                    <option value="1080p">1080p (HD)</option>
-                    <option value="1440p" class="premium-option" disabled>1440p (2K) 👑</option>
-                    <option value="2160p" class="premium-option" disabled>2160p (4K) 👑</option>
+                    <option value="1080">1080p (HD)</option>
+                    <option value="1440">1440p (2K)</option>
+                    <option value="2160" class="premium-option" disabled>2160p (4K) 👑</option>
+                    <option value="original" class="premium-option" disabled>Original 👑</option>
                 </select>
                 <button id="download-btn" class="download-btn">Download photo</button>
             </div>
