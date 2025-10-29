@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loadingBarWrapper.style.display = 'block';
 
         let currentPercent = 0;
-        const estimatedTime = 3000; 
+        const estimatedTime = 3000;
         const intervalStepTime = estimatedTime / 100;
 
         const loadingInterval = setInterval(() => {
@@ -47,13 +47,14 @@ document.addEventListener('DOMContentLoaded', () => {
             alert("Please submit a video link first.");
             return;
         }
-        
+
         const formatSelect = document.getElementById('convert-select').value;
         const qualitySelect = document.getElementById('quality-select').value;
-        const fileName = `youtube-${videoId}-${qualitySelect}.${formatSelect}`;
+        const audioQualitySelect = document.getElementById('audio-quality-select').value;
+        const fileName = `youtube-${videoId}-${qualitySelect}-${audioQualitySelect}.${formatSelect}`;
 
         const a = document.createElement('a');
-        a.href = "data:text/plain;charset=utf-8,";
+        a.href = 'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4';
         a.download = fileName;
         document.body.appendChild(a);
         a.click();
