@@ -23,6 +23,16 @@ document.addEventListener('DOMContentLoaded', () => {
     let isPainting = false;
     let currentImage = new Image();
 
+    const applyWatermark = (context, width, height) => {
+        const watermarkText = "enhanced @ clipconverter.cfd";
+        const fontSize = Math.max(12, Math.min(width * 0.03, height * 0.03));
+        context.font = `600 ${fontSize}px Poppins`;
+        context.fillStyle = "rgba(255, 255, 255, 0.5)";
+        context.textAlign = "right";
+        context.textBaseline = "bottom";
+        context.fillText(watermarkText, width - 15, height - 15);
+    };
+
     fileInput.addEventListener('change', (event) => {
         const file = event.target.files[0];
         if (!file || !file.type.startsWith('image/')) return;
@@ -38,14 +48,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     const imageUrl = e.target.result;
+                    currentImage.onload = () => {
+                        const context = canvas.getContext('2d');
+                        canvas.width = currentImage.naturalWidth;
+                        canvas.height = currentImage.naturalHeight;
+                        context.drawImage(currentImage, 0, 0);
+                        applyWatermark(context, canvas.width, canvas.height);
+                        const watermarkedUrl = canvas.toDataURL();
+                        
+                        beforeImage.src = imageUrl;
+                        afterImage.src = watermarkedUrl;
+                        currentImage.src = watermarkedUrl;
+
+                        setTimeout(() => {
+                            processingContainer.style.display = 'none';
+                            conversionSection.style.display = 'flex';
+                            setTimeout(() => conversionSection.style.opacity = '1', 50);
+                        }, 500);
+                    };
                     currentImage.src = imageUrl;
-                    beforeImage.src = imageUrl;
-                    afterImage.src = imageUrl;
-                    setTimeout(() => {
-                        processingContainer.style.display = 'none';
-                        conversionSection.style.display = 'flex';
-                        setTimeout(() => conversionSection.style.opacity = '1', 50);
-                    }, 500);
                 };
                 reader.readAsDataURL(file);
             }
@@ -75,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             handleSliderInteraction(e.clientX);
             window.addEventListener('mousemove', onMouseMove);
-            window.addEventListener('mouseup', () => window.removeEventListener('mousemove', onMouseMove));
+            window.addEventListener('mouseup', () => window.removeEventListener('mousemove', onMouseMove), { once: true });
         }
     });
 
@@ -86,7 +107,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     window.addEventListener('mouseup', () => { isPainting = false; });
-
     const onMouseMove = (e) => handleSliderInteraction(e.clientX);
 
     objectRemoverBtn.addEventListener('click', () => {
@@ -115,24 +135,12 @@ document.addEventListener('DOMContentLoaded', () => {
         context.drawImage(currentImage, 0, 0);
 
         const brushSize = 40;
-        const sampleRingRadius = brushSize * 1.5;
-        let r = 0, g = 0, b = 0, count = 0;
+        const sampleOffset = brushSize;
+        const sx = x - sampleOffset < 0 ? x + sampleOffset : x - sampleOffset;
+        
+        context.drawImage(canvas, sx, y - brushSize / 2, brushSize, brushSize, x - brushSize / 2, y - brushSize / 2, brushSize, brushSize);
 
-        for (let i = 0; i < 360; i += 30) {
-            const angle = i * Math.PI / 180;
-            const sx = x + Math.cos(angle) * sampleRingRadius;
-            const sy = y + Math.sin(angle) * sampleRingRadius;
-            if (sx > 0 && sx < canvas.width && sy > 0 && sy < canvas.height) {
-                const pixel = context.getImageData(sx, sy, 1, 1).data;
-                r += pixel[0]; g += pixel[1]; b += pixel[2];
-                count++;
-            }
-        }
-
-        context.fillStyle = `rgb(${r/count}, ${g/count}, ${b/count})`;
-        context.beginPath();
-        context.arc(x, y, brushSize / 2, 0, Math.PI * 2, false);
-        context.fill();
+        applyWatermark(context, canvas.width, canvas.height);
         
         const newImageUrl = canvas.toDataURL();
         afterImage.src = newImageUrl;
@@ -163,6 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         context.filter = filters;
         context.drawImage(currentImage, 0, 0, canvas.width, canvas.height);
+        applyWatermark(context, canvas.width, canvas.height);
         
         const link = document.createElement('a');
         link.download = `enhanced-photo-${qualitySelect.value}.png`;
