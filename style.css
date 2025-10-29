@@ -136,13 +136,14 @@ input[type="file"] { display: none; }
     background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));
     transition: width 0.1s linear;
 }
-.loading-percent {
+.loading-percent, .processing-status {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     font-weight: 600;
 }
+.processing-status { position: static; transform: none; margin-top: 10px; }
 
 .conversion-section {
     display: none;
@@ -178,21 +179,32 @@ input[type="file"] { display: none; }
     font-size: 1rem;
 }
 .premium-option { color: #aaa; }
-
+.optimization-option {
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
+    gap: 10px;
+}
 .download-btn {
     margin-top: 25px;
     padding: 12px 25px;
     font-size: 1.1rem;
 }
 
-.info-sections { background-color: var(--light-bg); padding: 50px 5%; }
+.info-sections { background-color: var(--light-bg); padding: 50px 0; }
+.features-section, .suggestions-section {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 5%;
+    text-align: center;
+}
+.features-section h2 { font-size: 2rem; margin-bottom: 40px; }
 
-.features-section {
+.feature-grid {
     display: grid;
     grid-template-columns: 1fr;
     gap: 30px;
-    max-width: 1200px;
-    margin: 0 auto 50px auto;
 }
 .feature-box {
     background-color: var(--card-bg);
@@ -205,11 +217,7 @@ input[type="file"] { display: none; }
     border-bottom: 2px solid var(--primary-color);
     display: inline-block;
 }
-.feature-box ul {
-    list-style: none;
-    padding: 0;
-    text-align: left;
-}
+.feature-box ul { list-style: none; padding: 0; text-align: left; }
 .feature-box ul li {
     padding-left: 20px;
     position: relative;
@@ -234,14 +242,14 @@ input[type="file"] { display: none; }
 .format-spinner.fade { opacity: 0; }
 
 .suggestions-section {
-    text-align: center;
     border-top: 2px solid var(--dark-bg);
     padding-top: 50px;
+    margin-top: 50px;
 }
 .suggestions-btn { margin-top: 10px; font-size: 1.1rem; }
 
 .site-footer {
-    padding: 20px;
+    padding: 25px;
     text-align: center;
     color: var(--text-muted);
     font-size: 0.9rem;
@@ -250,7 +258,7 @@ input[type="file"] { display: none; }
 
 @media (min-width: 768px) {
     .nav-user { display: block; }
-    .features-section { grid-template-columns: repeat(3, 1fr); }
+    .feature-grid { grid-template-columns: repeat(3, 1fr); }
 }
 
 @media (min-width: 992px) {
