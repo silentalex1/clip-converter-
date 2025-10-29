@@ -95,7 +95,6 @@ document.addEventListener('DOMContentLoaded', () => {
             videoElement.src = URL.createObjectURL(videoFile);
             
             videoElement.onloadedmetadata = async () => {
-                const targetFrameRate = optimizeCheckbox.checked ? 30 : 0;
                 const quality = qualitySelect.value;
                 const ratio = videoElement.videoWidth / videoElement.videoHeight;
 
@@ -124,23 +123,21 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.warn("Could not process audio track.");
                 }
                 
-                const videoStream = canvas.captureStream(targetFrameRate || undefined);
+                const videoStream = canvas.captureStream();
                 const videoTrack = videoStream.getVideoTracks()[0];
                 
                 const streamTracks = [videoTrack];
                 if(audioTrack) streamTracks.push(audioTrack);
                 
                 const combinedStream = new MediaStream(streamTracks);
-
                 const mimeType = 'video/mp4';
+
                 if (!MediaRecorder.isTypeSupported(mimeType)) {
                     return reject(new Error(`${mimeType} format is not supported by your browser.`));
                 }
 
                 const recorder = new MediaRecorder(combinedStream, { mimeType, videoBitsPerSecond: 8000000 });
                 const chunks = [];
-                let framesProcessed = 0;
-
                 recorder.ondataavailable = (e) => chunks.push(e.data);
                 recorder.onstop = () => {
                     const blob = new Blob(chunks, { type: mimeType });
@@ -149,59 +146,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
                 recorder.onerror = (e) => reject(e);
                 
-                let currentTime = 0;
-                const duration = videoElement.duration;
-                const frameInterval = 1 / (targetFrameRate || 30);
-                
-                const processNextFrame = () => {
-                    if (currentTime < duration) {
-                        videoElement.currentTime = currentTime;
-                    } else {
-                        if(recorder.state === "recording") recorder.stop();
-                    }
-                };
-                
-                videoElement.onseeked = () => {
-                    context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-                    framesProcessed++;
-                    processingStatus.textContent = `Processing... ${Math.round((currentTime / duration) * 100)}%`;
-                    currentTime += frameInterval; 
-                    requestAnimationFrame(processNextFrame);
-                };
-                
                 recorder.start();
-                videoElement.play().then(processNextFrame).catch(reject);
+                videoElement.play();
+
+                const duration = videoElement.duration;
+                let lastTime = -1;
+
+                const renderLoop = () => {
+                    if (videoElement.paused || videoElement.ended) {
+                        if(recorder.state === "recording") recorder.stop();
+                        return;
+                    }
+                    if (videoElement.currentTime !== lastTime) {
+                        context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+                        processingStatus.textContent = `Processing... ${Math.round((videoElement.currentTime / duration) * 100)}%`;
+                        lastTime = videoElement.currentTime;
+                    }
+                    requestAnimationFrame(renderLoop);
+                };
+                requestAnimationFrame(renderLoop);
             };
             videoElement.onerror = () => reject(new Error('Failed to load video. The file may be corrupt.'));
         });
     }
-
-    let isDown = false;
-    let startX, scrollLeft;
-    navbar.addEventListener('mousedown', (e) => {
-        isDown = true;
-        navbar.style.cursor = 'grabbing';
-        startX = e.pageX - navbar.offsetLeft;
-        scrollLeft = navbar.scrollLeft;
-    });
-    navbar.addEventListener('mouseleave', () => { isDown = false; navbar.style.cursor = 'default'; });
-    navbar.addEventListener('mouseup', () => { isDown = false; navbar.style.cursor = 'default'; });
-    navbar.addEventListener('mousemove', (e) => {
-        if (!isDown) return;
-        e.preventDefault();
-        const x = e.pageX - navbar.offsetLeft;
-        const walk = (x - startX) * 2; 
-        navbar.scrollLeft = scrollLeft - walk;
-    });
-
-    const formats = ['mov', 'mkv', 'avi', 'wav', 'flac'];
-    let formatIndex = 0;
-    setInterval(() => {
-        formatSpinner.classList.add('fade');
-        setTimeout(() => {
-            formatIndex = (formatIndex + 1) % formats.length;
-            formatSpinner.textContent = formats[formatIndex];
-            formatSpinner.classList.remove('fade');
-        }, 400);
-    }, 2000);
 });
