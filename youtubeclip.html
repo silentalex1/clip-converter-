@@ -8,7 +8,7 @@
 </head>
 <body>
     <nav class="navbar">
-        <a href="/" class="nav-btn go-back-btn">Go Back</a>
+        <a href="index.html" class="nav-btn go-back-btn">Go Back</a>
         <div class="nav-buttons">
             <a href="accountcreation.html" class="signin-btn" id="signin-btn">Sign In</a>
         </div>
@@ -44,22 +44,24 @@
             <div class="conversion-options">
                 <label for="convert-select">Convert to:</label>
                 <select id="convert-select" name="format">
-                    <option value="mp4">MP4 Video</option>
-                    <option value="mp3">MP3 Audio</option>
-                    <option value="webm">WEBM Video</option>
-                    <option value="avi">AVI Video</option>
-                    <option value="wav">WAV Audio</option>
-                    <option value="opus">OPUS Audio</option>
+                    <option value="mp4">MP4</option>
+                    <option value="mov">MOV</option>
+                    <option value="mkv">MKV</option>
+                    <option value="avi">AVI</option>
                 </select>
 
-                <label for="quality-select">Change quality:</label>
+                <label for="quality-select">Video Quality:</label>
                 <select id="quality-select" name="quality">
-                    <option value="360p">360p</option>
                     <option value="480p">480p</option>
-                    <option value="720p">720p (HD)</option>
-                    <option value="1080p">1080p (Full HD)</option>
-                    <option value="128kbps" class="premium-option" disabled>128kbps (Audio) 👑</option>
-                    <option value="320kbps" class="premium-option" disabled>320kbps (Audio) 👑</option>
+                    <option value="720p">720p</option>
+                    <option value="1080p">1080p (HD)</option>
+                </select>
+
+                <label for="audio-quality-select">Audio Quality:</label>
+                <select id="audio-quality-select" name="audio-quality">
+                    <option value="128kbps">128kbps</option>
+                    <option value="320kbps" class="premium-option" disabled>320kbps (High Quality) 👑</option>
+                    <option value="425kbps" class="premium-option" disabled>425kbps (Lossless) 👑</option>
                 </select>
                 <button class="download-btn">Download</button>
             </div>
@@ -75,6 +77,6 @@
         </ul>
     </footer>
 
-    <script src="youtube.js"></script>
+    <script src="youtube.js" defer></script>
 </body>
 </html>
