@@ -6,7 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadingPercent = document.querySelector('.loading-percent');
     const conversionSection = document.getElementById('conversion-section');
     const downloadBtn = document.getElementById('download-btn');
-    const sliderInput = document.getElementById('slider-input');
+    const sliderInput = document.createElement('input');
+    sliderInput.type = 'range';
     const afterImageContainer = document.getElementById('after-image-container');
     const sliderLine = document.querySelector('.slider-line');
     const sliderHandle = document.querySelector('.slider-handle');
@@ -27,10 +28,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const watermarkText = "enhanced @ clipconverter.cfd";
         const fontSize = Math.max(12, Math.min(width * 0.03, height * 0.03));
         context.font = `600 ${fontSize}px Poppins`;
-        context.fillStyle = "rgba(255, 255, 255, 0.5)";
         context.textAlign = "right";
         context.textBaseline = "bottom";
-        context.fillText(watermarkText, width - 15, height - 15);
+        const textMetrics = context.measureText(watermarkText);
+        const padding = fontSize * 0.5;
+        context.fillStyle = "rgba(0, 0, 0, 0.4)";
+        context.fillRect(width - textMetrics.width - padding * 2, height - fontSize - padding * 2, textMetrics.width + padding, fontSize + padding);
+        context.fillStyle = "rgba(255, 255, 255, 0.7)";
+        context.fillText(watermarkText, width - padding, height - padding);
     };
 
     fileInput.addEventListener('change', (event) => {
@@ -85,10 +90,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const rect = comparisonSlider.getBoundingClientRect();
         let value = ((clientX - rect.left) / rect.width) * 100;
         value = Math.max(0, Math.min(100, value));
-        sliderInput.value = value;
         moveSlider(value);
     };
-
+    
     comparisonSlider.addEventListener('mousedown', (e) => {
         if (isObjectRemoverActive) {
             isPainting = true;
@@ -101,13 +105,31 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     comparisonSlider.addEventListener('mousemove', (e) => {
-        if (isObjectRemoverActive && isPainting) {
-            removeObjectAt(e.clientX, e.clientY);
-        }
+        if (isObjectRemoverActive && isPainting) removeObjectAt(e.clientX, e.clientY);
     });
+    
+    comparisonSlider.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        if (isObjectRemoverActive) {
+            isPainting = true;
+            removeObjectAt(e.touches[0].clientX, e.touches[0].clientY);
+        } else {
+            handleSliderInteraction(e.touches[0].clientX);
+            window.addEventListener('touchmove', onTouchMove, { passive: false });
+            window.addEventListener('touchend', () => window.removeEventListener('touchmove', onTouchMove), { once: true });
+        }
+    }, { passive: false });
+
+    comparisonSlider.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        if (isObjectRemoverActive && isPainting) removeObjectAt(e.touches[0].clientX, e.touches[0].clientY);
+    }, { passive: false });
 
     window.addEventListener('mouseup', () => { isPainting = false; });
+    window.addEventListener('touchend', () => { isPainting = false; });
+
     const onMouseMove = (e) => handleSliderInteraction(e.clientX);
+    const onTouchMove = (e) => { e.preventDefault(); handleSliderInteraction(e.touches[0].clientX); };
 
     objectRemoverBtn.addEventListener('click', () => {
         isObjectRemoverActive = !isObjectRemoverActive;
