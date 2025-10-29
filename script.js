@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 const context = canvas.getContext('2d');
-                if (quality === '1080') {
+                if (qualitySelect.value.includes('1080')) {
                     context.filter = 'contrast(105%) saturate(115%) brightness(102%)';
                 }
 
@@ -169,4 +169,17 @@ document.addEventListener('DOMContentLoaded', () => {
             videoElement.onerror = () => reject(new Error('Failed to load video. The file may be corrupt.'));
         });
     }
+
+    const formats = ['mov', 'mkv', 'avi', 'wav', 'flac'];
+    let formatIndex = 0;
+    setInterval(() => {
+        if (formatSpinner) {
+            formatSpinner.classList.add('fade');
+            setTimeout(() => {
+                formatIndex = (formatIndex + 1) % formats.length;
+                formatSpinner.textContent = formats[formatIndex];
+                formatSpinner.classList.remove('fade');
+            }, 400);
+        }
+    }, 2000);
 });
