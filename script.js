@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('canvas');
 
     let originalFileBlob = null;
+    let isProcessing = false;
 
     fileInput.addEventListener('change', (event) => {
         const file = event.target.files[0];
@@ -43,14 +44,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     downloadBtn.addEventListener('click', async () => {
-        if (!originalFileBlob) {
-            alert("Please select a file first.");
+        if (isProcessing || !originalFileBlob) {
+            alert("Please select a file or wait for the current process to finish.");
             return;
         }
 
+        isProcessing = true;
         downloadBtn.disabled = true;
         processingStatus.textContent = "Preparing your download...";
-        const needsProcessing = optimizeCheckbox.checked || qualitySelect.value.includes('1080p');
+        
+        const needsProcessing = optimizeCheckbox.checked || qualitySelect.value !== 'source';
 
         if (!needsProcessing) {
             downloadFile(URL.createObjectURL(originalFileBlob), false);
@@ -63,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
             downloadFile(URL.createObjectURL(processedBlob), true);
         } catch (error) {
             console.error("Processing failed:", error);
-            processingStatus.textContent = "Processing failed. Downloading original file.";
+            processingStatus.textContent = `Error: ${error.message}. Downloading original file.`;
             downloadFile(URL.createObjectURL(originalFileBlob), false);
         }
     });
@@ -71,10 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function downloadFile(url, wasProcessed) {
         const selectedFormat = document.getElementById('convert-select').value;
         const originalName = originalFileBlob.name.split('.').slice(0, -1).join('.');
-        let finalExtension = selectedFormat;
-        if (wasProcessed) {
-            finalExtension = 'mp4';
-        }
+        const finalExtension = wasProcessed ? 'mp4' : selectedFormat;
         const a = document.createElement('a');
         a.href = url;
         a.download = `${originalName}-enhanced.${finalExtension}`;
@@ -82,36 +82,46 @@ document.addEventListener('DOMContentLoaded', () => {
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-        processingStatus.textContent = "";
+        if (!wasProcessed) processingStatus.textContent = "";
         downloadBtn.disabled = false;
+        isProcessing = false;
     }
 
     async function processVideo(videoFile) {
         return new Promise((resolve, reject) => {
             const video = document.createElement('video');
             video.preload = 'metadata';
+            video.muted = true;
             video.src = URL.createObjectURL(videoFile);
             
             video.onloadedmetadata = () => {
-                const targetFrameRate = 30;
-                canvas.width = video.videoWidth;
-                canvas.height = video.videoHeight;
+                const targetFrameRate = optimizeCheckbox.checked ? 30 : 0;
+                const quality = qualitySelect.value;
+                const ratio = video.videoWidth / video.videoHeight;
+
+                if (quality !== 'source') {
+                    const targetHeight = parseInt(quality, 10);
+                    canvas.height = targetHeight;
+                    canvas.width = targetHeight * ratio;
+                } else {
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                }
+
                 const context = canvas.getContext('2d');
-                
-                if (qualitySelect.value.includes('1080p')) {
-                    context.filter = 'contrast(105%) saturate(120%) brightness(102%)';
+                if (quality === '1080') {
+                    context.filter = 'contrast(105%) saturate(120%) brightness(102%) sharpen(10%)';
                 }
 
                 const mimeType = 'video/mp4';
                 if (!MediaRecorder.isTypeSupported(mimeType)) {
-                    console.error(`${mimeType} is not supported.`);
-                    reject(new Error(`${mimeType} is not supported.`));
-                    return;
+                    return reject(new Error(`${mimeType} format is not supported by your browser.`));
                 }
 
-                const stream = canvas.captureStream(targetFrameRate);
-                const recorder = new MediaRecorder(stream, { mimeType });
+                const stream = canvas.captureStream(targetFrameRate || undefined);
+                const recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 5000000 });
                 const chunks = [];
+                let framesProcessed = 0;
 
                 recorder.ondataavailable = (e) => chunks.push(e.data);
                 recorder.onstop = () => {
@@ -125,31 +135,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
                 
                 let currentTime = 0;
-                video.currentTime = 0;
+                const duration = video.duration;
+                const frameInterval = 1 / (targetFrameRate || 30);
                 
-                const drawFrame = () => {
-                    if (video.seeking) return;
-                    if (currentTime < video.duration) {
-                        context.drawImage(video, 0, 0, canvas.width, canvas.height);
-                        currentTime += 1 / targetFrameRate;
-                        if (currentTime < video.duration) {
-                            video.currentTime = currentTime;
-                        } else {
-                            recorder.stop();
-                        }
+                const processNextFrame = () => {
+                    if (currentTime < duration) {
+                        video.currentTime = currentTime;
                     } else {
                         recorder.stop();
                     }
                 };
                 
-                video.onseeked = drawFrame;
+                video.onseeked = () => {
+                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    framesProcessed++;
+                    processingStatus.textContent = `Processing... ${Math.round((currentTime / duration) * 100)}%`;
+                    currentTime += frameInterval; 
+                    requestAnimationFrame(processNextFrame);
+                };
+                
                 recorder.start();
-                drawFrame();
+                processNextFrame();
             };
-            video.onerror = (e) => {
-                URL.revokeObjectURL(video.src);
-                reject(new Error('Failed to load video metadata.'));
-            };
+            video.onerror = () => reject(new Error('Failed to load video. The file may be corrupt.'));
         });
     }
 
@@ -171,7 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
         navbar.scrollLeft = scrollLeft - walk;
     });
 
-    const formats = ['mov', 'avi', 'mkv', 'wav', 'flac'];
+    const formats = ['mov', 'avi', 'mkv', 'gif', 'webm'];
     let formatIndex = 0;
     setInterval(() => {
         formatSpinner.classList.add('fade');
