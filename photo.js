@@ -17,7 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const majesticModeToggle = document.getElementById('majestic-mode-toggle');
     const brightnessSlider = document.getElementById('brightness-slider');
     const qualitySelect = document.getElementById('quality-select');
-    const removerBrush = document.querySelector('.remover-brush');
 
     let isObjectRemoverActive = false;
     let isPainting = false;
@@ -25,14 +24,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const applyWatermark = (context, width, height) => {
         const watermarkText = "enhanced @ clipconverter.cfd";
-        const fontSize = Math.max(12, Math.min(width * 0.03, height * 0.03));
+        const fontSize = Math.max(14, Math.min(width * 0.03, height * 0.03));
         context.font = `600 ${fontSize}px Poppins`;
         context.textAlign = "right";
         context.textBaseline = "bottom";
         const textMetrics = context.measureText(watermarkText);
-        const padding = fontSize * 0.4;
+        const padding = fontSize * 0.5;
         context.fillStyle = "rgba(0, 0, 0, 0.5)";
-        context.fillRect(width - textMetrics.width - padding * 2, height - fontSize - padding * 2, textMetrics.width + padding * 2, fontSize + padding * 2);
+        context.fillRect(width - textMetrics.width - padding * 1.5, height - fontSize - padding * 1.5, textMetrics.width + padding, fontSize + padding);
         context.fillStyle = "rgba(255, 255, 255, 0.8)";
         context.fillText(watermarkText, width - padding, height - padding);
     };
@@ -51,6 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 clearInterval(loadingInterval);
                 const reader = new FileReader();
                 reader.onload = (e) => {
+                    const imageUrl = e.target.result;
                     currentImage.onload = () => {
                         const context = canvas.getContext('2d');
                         canvas.width = currentImage.naturalWidth;
@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         applyWatermark(context, canvas.width, canvas.height);
                         const watermarkedUrl = canvas.toDataURL();
                         
-                        beforeImage.src = e.target.result;
+                        beforeImage.src = imageUrl;
                         afterImage.src = watermarkedUrl;
                         currentImage.src = watermarkedUrl;
 
@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             setTimeout(() => conversionSection.style.opacity = '1', 50);
                         }, 500);
                     };
-                    currentImage.src = e.target.result;
+                    currentImage.src = imageUrl;
                 };
                 reader.readAsDataURL(file);
             }
@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
         sliderHandle.style.left = val;
     };
 
-    const handleInteraction = (clientX) => {
+    const handleSliderInteraction = (clientX) => {
         const rect = comparisonSlider.getBoundingClientRect();
         let value = ((clientX - rect.left) / rect.width) * 100;
         value = Math.max(0, Math.min(100, value));
@@ -96,28 +96,23 @@ document.addEventListener('DOMContentLoaded', () => {
             isPainting = true;
             removeObjectAt(e.clientX, e.clientY);
         } else {
-            handleInteraction(e.clientX);
+            handleSliderInteraction(e.clientX);
             window.addEventListener('mousemove', onMouseMove);
             window.addEventListener('mouseup', () => window.removeEventListener('mousemove', onMouseMove), { once: true });
         }
     });
 
     comparisonSlider.addEventListener('mousemove', (e) => {
-        if (isObjectRemoverActive) {
-            removerBrush.style.left = `${e.clientX - comparisonSlider.getBoundingClientRect().left}px`;
-            removerBrush.style.top = `${e.clientY - comparisonSlider.getBoundingClientRect().top}px`;
-            if (isPainting) removeObjectAt(e.clientX, e.clientY);
-        }
+        if (isObjectRemoverActive && isPainting) removeObjectAt(e.clientX, e.clientY);
     });
     
     comparisonSlider.addEventListener('touchstart', (e) => {
         e.preventDefault();
-        const touch = e.touches[0];
         if (isObjectRemoverActive) {
             isPainting = true;
-            removeObjectAt(touch.clientX, touch.clientY);
+            removeObjectAt(e.touches[0].clientX, e.touches[0].clientY);
         } else {
-            handleInteraction(touch.clientX);
+            handleSliderInteraction(e.touches[0].clientX);
             window.addEventListener('touchmove', onTouchMove, { passive: false });
             window.addEventListener('touchend', () => window.removeEventListener('touchmove', onTouchMove), { once: true });
         }
@@ -125,17 +120,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     comparisonSlider.addEventListener('touchmove', (e) => {
         e.preventDefault();
-        const touch = e.touches[0];
-        removerBrush.style.left = `${touch.clientX - comparisonSlider.getBoundingClientRect().left}px`;
-        removerBrush.style.top = `${touch.clientY - comparisonSlider.getBoundingClientRect().top}px`;
-        if (isObjectRemoverActive && isPainting) removeObjectAt(touch.clientX, touch.clientY);
+        if (isObjectRemoverActive && isPainting) removeObjectAt(e.touches[0].clientX, e.touches[0].clientY);
     }, { passive: false });
 
     window.addEventListener('mouseup', () => { isPainting = false; });
     window.addEventListener('touchend', () => { isPainting = false; });
 
-    const onMouseMove = (e) => handleInteraction(e.clientX);
-    const onTouchMove = (e) => { e.preventDefault(); handleInteraction(e.touches[0].clientX); };
+    const onMouseMove = (e) => handleSliderInteraction(e.clientX);
+    const onTouchMove = (e) => { e.preventDefault(); handleSliderInteraction(e.touches[0].clientX); };
 
     objectRemoverBtn.addEventListener('click', () => {
         isObjectRemoverActive = !isObjectRemoverActive;
