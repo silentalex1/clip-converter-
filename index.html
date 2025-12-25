@@ -3,82 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Ultra Live Converter</title>
+    <title>Live Maker</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="background-overlay"></div>
+    <div class="bg-layer"></div>
     
-    <main id="main-wrapper">
-        <div id="converter-card">
-            <section id="ui-start" class="view active">
+    <main id="container">
+        <div id="card">
+            <section id="page-1" class="view active">
                 <header>
-                    <div class="status-dot"></div>
-                    <h1>Live Converter</h1>
-                    <p>Convert clips into high-resolution live media files.</p>
+                    <div class="blue-dot"></div>
+                    <h1>Live Maker</h1>
+                    <p>Change your clips into high quality photos and videos.</p>
                 </header>
 
-                <div class="options-grid">
-                    <div class="option-group">
-                        <label>Output Quality</label>
-                        <select id="res-level">
-                            <option value="1280">Standard (720p)</option>
-                            <option value="1920">High (1080p)</option>
+                <div class="menu-grid">
+                    <div class="menu-item">
+                        <label>Size & Quality</label>
+                        <select id="res-pick">
+                            <option value="1280">Small (720p)</option>
+                            <option value="1920">Clear (1080p)</option>
                             <option value="3840">Ultra (4K)</option>
-                            <option value="7680">Master (8K)</option>
+                            <option value="7680">Best (8K)</option>
                         </select>
                     </div>
 
-                    <div class="option-group">
-                        <label>File Format</label>
-                        <select id="ext-type">
+                    <div class="menu-item">
+                        <label>File Type</label>
+                        <select id="type-pick">
                             <option value="video/quicktime|.mov">Live Photo (.mov)</option>
                             <option value="video/mp4|.mp4">Standard (.mp4)</option>
-                            <option value="video/webm|.webm">Web Optimized (.webm)</option>
+                            <option value="video/webm|.webm">Web Clip (.webm)</option>
                         </select>
                     </div>
                 </div>
 
-                <div class="action-area">
-                    <input type="file" id="input-source" accept="video/*" hidden>
-                    <button id="btn-pick" class="cta">Choose Video Clip</button>
-                    <p class="limit-hint">Maximum duration: 10 seconds</p>
+                <div class="btn-zone">
+                    <input type="file" id="file-in" accept="video/*" hidden>
+                    <button id="pick-btn" class="main-btn">Choose Video Clip</button>
+                    <p class="hint">Must be 10 seconds or less</p>
                 </div>
 
-                <div class="scroll-info">
-                    <span>Pro Features: Real-time scaling, Bitrate optimization, Metadata syncing.</span>
+                <div class="info-footer">
+                    <p>This tool changes the pixels and dots in your video to make it look better on any screen.</p>
                 </div>
             </section>
 
-            <section id="ui-process" class="view">
-                <div class="engine-display">
-                    <div class="ring"></div>
-                    <div class="core"></div>
+            <section id="page-2" class="view">
+                <div class="loading-box">
+                    <div class="outer-ring"></div>
+                    <div class="inner-dot"></div>
                 </div>
-                <h2>Processing Engine</h2>
-                <div class="track">
-                    <div id="fill-level"></div>
+                <h2>Working...</h2>
+                <div class="track-bar">
+                    <div id="fill-bar"></div>
                 </div>
-                <div class="data-readout">
-                    <span id="label-pct">0%</span>
-                    <span id="label-frame">Frame: 0</span>
+                <div class="stats">
+                    <span id="stat-pct">0%</span>
+                    <span id="stat-fr">Frame: 0</span>
                 </div>
             </section>
 
-            <section id="ui-finish" class="view">
-                <div class="display-case">
-                    <video id="output-view" loop muted playsinline></video>
-                    <div id="res-badge">8K ACTIVE</div>
+            <section id="page-3" class="view">
+                <div class="preview-area">
+                    <video id="out-video" loop muted playsinline></video>
+                    <div id="tag">HIGH QUALITY</div>
                 </div>
-                <h2>Export Ready</h2>
-                <p>Resolution has been scaled and frames stabilized.</p>
-                <button id="btn-save" class="cta success">Download File</button>
-                <button onclick="location.reload()" class="btn-alt">Convert Another</button>
+                <h2>Done!</h2>
+                <p>Your file is ready to save.</p>
+                <button id="save-btn" class="main-btn green">Download File</button>
+                <button onclick="location.reload()" class="sub-btn">Start New</button>
             </section>
         </div>
     </main>
 
-    <canvas id="engine-canvas" style="display:none;"></canvas>
+    <canvas id="engine" style="display:none;"></canvas>
     <script src="script.js"></script>
 </body>
 </html>
