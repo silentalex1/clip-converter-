@@ -2,36 +2,80 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clip Converter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Live8K | Pro Video Converter</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
+    <div class="app-background"></div>
+    
+    <main id="app-shell">
+        <section id="upload-view" class="step-card active">
+            <header>
+                <div class="brand-badge">PRO</div>
+                <i data-lucide="layers" class="hero-icon"></i>
+                <h1>Live8K</h1>
+                <p>Master-grade Live Photo conversion with up to 8K resolution scaling.</p>
+            </header>
 
-    <div id="main-container">
-        <div id="upload-section">
-            <h1>Clip Converter</h1>
-            <p>Convert your video clips.</p>
-            <input type="file" id="video-input" accept="video/*" hidden>
-            <button id="upload-btn">Select Video (Max 10s)</button>
-        </div>
-
-        <div id="loading-section" class="hidden">
-            <h2>Processing your clip...</h2>
-            <div class="progress-bar-container">
-                <div id="progress-fill"></div>
+            <div class="control-panel">
+                <div class="setting-item">
+                    <label>Target Resolution</label>
+                    <select id="res-selector">
+                        <option value="1920">1080p Full HD</option>
+                        <option value="3840">4K Ultra HD</option>
+                        <option value="7680">8K Master Quality</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <label>Output Format</label>
+                    <select id="format-selector">
+                        <option value="live">Live Photo (MOV)</option>
+                        <option value="high-mp4">ProRes Equivalent (MP4)</option>
+                    </select>
+                </div>
             </div>
-            <p id="percentage">0%</p>
-        </div>
 
-        <div id="result-section" class="hidden">
-            <h2>Conversion Complete!</h2>
-            <p>Your video has been enhanced to the highest quality and converted to a Live Photo.</p>
-            <button class="download-btn">Download Live Photo</button>
-            <button onclick="location.reload()" class="back-btn">Convert Another</button>
-        </div>
-    </div>
+            <input type="file" id="media-input" accept="video/*" hidden>
+            <button id="trigger-upload" class="main-action">
+                <i data-lucide="plus-circle"></i>
+                <span>Import Clip</span>
+            </button>
+            <footer class="input-info">Supports clips up to 10s</footer>
+        </section>
 
+        <section id="process-view" class="step-card">
+            <div class="processing-orb">
+                <div class="inner-pulse"></div>
+            </div>
+            <h2 id="status-label">Initializing Engine</h2>
+            <div class="meter-container">
+                <div id="meter-fill"></div>
+            </div>
+            <div class="stat-row">
+                <span id="percent-val">0%</span>
+                <span id="frame-val">Frame: 0</span>
+            </div>
+        </section>
+
+        <section id="export-view" class="step-card">
+            <div class="preview-stage">
+                <video id="final-preview" playsinline loop muted></video>
+                <div class="quality-tag">8K ENHANCED</div>
+            </div>
+            <h2>Conversion Ready</h2>
+            <p>Your media has been upscaled and metadata optimized for Live Photo playback.</p>
+            <button id="download-action" class="main-action success">
+                <i data-lucide="download"></i>
+                <span>Save to Photos</span>
+            </button>
+            <button onclick="location.reload()" class="ghost-action">New Project</button>
+        </section>
+    </main>
+
+    <canvas id="render-canvas" style="display:none;"></canvas>
     <script src="script.js"></script>
+    <script>lucide.createIcons();</script>
 </body>
 </html>
