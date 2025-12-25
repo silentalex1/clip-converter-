@@ -1,7 +1,7 @@
 :root {
     --blue: #007AFF;
     --green: #34C759;
-    --card-bg: rgba(30, 30, 32, 0.95);
+    --card-bg: rgba(30, 30, 32, 0.85);
     --border: rgba(255, 255, 255, 0.1);
 }
 
@@ -16,45 +16,42 @@ body {
     background: #000;
     color: #fff;
     min-height: 100vh;
-    display: flex;
-    justify-content: center;
     overflow-y: auto;
 }
 
 .bg-layer {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle at 50% 0%, #1c1c1e 0%, #000 100%);
+    inset: 0;
+    background: radial-gradient(circle at 50% 10%, #1c1c1e 0%, #000 100%);
     z-index: -1;
 }
 
-#container {
+#view-port {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     padding: 20px;
+    min-height: 100vh;
+}
+
+#main-card {
     width: 100%;
-    max-width: 480px;
-    margin-top: auto;
-    margin-bottom: auto;
-}
-
-#card {
+    max-width: 380px;
     background: var(--card-bg);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--border);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
     border-radius: 40px;
-    padding: 30px 20px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+    border: 1px solid var(--border);
+    padding: 35px 25px;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.6);
 }
 
-.view {
+.screen {
     display: none;
     text-align: center;
 }
 
-.view.active {
+.screen.active {
     display: block;
     animation: zoomIn 0.4s ease-out;
 }
@@ -74,24 +71,23 @@ body {
 }
 
 h1 { font-size: 28px; font-weight: 800; margin: 0 0 10px; }
-p { color: #8e8e93; font-size: 15px; line-height: 1.4; }
+p { color: #888; font-size: 15px; margin-bottom: 25px; }
 
-.menu-grid {
-    margin: 30px 0;
-    display: flex;
-    flex-direction: column;
+.settings {
+    display: grid;
     gap: 12px;
+    margin-bottom: 25px;
 }
 
-.menu-item {
-    background: rgba(255,255,255,0.05);
+.input-group {
+    background: rgba(0,0,0,0.4);
     border: 1px solid var(--border);
-    border-radius: 15px;
+    border-radius: 16px;
     padding: 10px 15px;
     text-align: left;
 }
 
-.menu-item label {
+.input-group label {
     display: block;
     font-size: 10px;
     text-transform: uppercase;
@@ -103,89 +99,85 @@ p { color: #8e8e93; font-size: 15px; line-height: 1.4; }
 select {
     width: 100%;
     background: transparent;
-    color: white !important;
+    color: #fff;
     border: none;
     font-size: 16px;
-    font-weight: 600;
+    font-weight: 500;
     outline: none;
-    appearance: none;
     cursor: pointer;
 }
 
 select option {
-    background-color: #1c1c1e;
-    color: white;
-    padding: 10px;
+    background: #1c1c1e;
+    color: #fff;
 }
 
 .main-btn {
     width: 100%;
     padding: 18px;
-    border-radius: 22px;
+    border-radius: 20px;
     border: none;
     background: var(--blue);
-    color: white;
-    font-size: 18px;
+    color: #fff;
+    font-size: 17px;
     font-weight: 700;
     cursor: pointer;
-    box-shadow: 0 10px 20px rgba(0, 113, 227, 0.3);
+    box-shadow: 0 8px 20px rgba(0, 113, 227, 0.3);
 }
 
-.main-btn.green { background: var(--green); box-shadow: 0 10px 20px rgba(52, 199, 89, 0.3); }
-.main-btn:active { transform: scale(0.98); }
+.main-btn.green { background: var(--green); box-shadow: 0 8px 20px rgba(52, 199, 89, 0.3); }
 
 .sub-btn {
     background: none;
     border: none;
     color: var(--blue);
-    margin-top: 15px;
-    font-size: 16px;
-    font-weight: 500;
-    cursor: pointer;
+    margin-top: 20px;
+    font-size: 15px;
+    font-weight: 600;
 }
 
 .hint { font-size: 12px; color: #444; margin-top: 10px; }
 
-.track-bar {
+.bar-bg {
     width: 100%;
     height: 6px;
-    background: rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.05);
     border-radius: 10px;
-    margin: 30px 0 10px;
+    margin: 25px 0 10px;
     overflow: hidden;
 }
 
-#fill-bar {
+#bar-move {
     width: 0%;
     height: 100%;
     background: var(--blue);
-    box-shadow: 0 0 15px var(--blue);
+    box-shadow: 0 0 10px var(--blue);
 }
 
-.stats {
+.numbers {
     display: flex;
     justify-content: space-between;
-    font-size: 12px;
+    font-size: 11px;
     color: #666;
 }
 
-.preview-area {
+.media-box {
     width: 100%;
-    aspect-ratio: 9/12;
+    aspect-ratio: 9/14;
     background: #000;
-    border-radius: 20px;
+    border-radius: 24px;
     overflow: hidden;
     position: relative;
     margin-bottom: 20px;
     border: 1px solid var(--border);
 }
 
-#out-video { width: 100%; height: 100%; object-fit: cover; }
+#view-final { width: 100%; height: 100%; object-fit: cover; }
 
-#tag {
+#res-tag {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 12px;
+    right: 12px;
     background: var(--blue);
     padding: 4px 8px;
     border-radius: 6px;
@@ -193,7 +185,7 @@ select option {
     font-weight: 900;
 }
 
-.loading-box {
+.loading-art {
     position: relative;
     width: 60px;
     height: 60px;
@@ -203,32 +195,35 @@ select option {
 .outer-ring {
     width: 100%;
     height: 100%;
-    border: 3px solid rgba(255,255,255,0.1);
+    border: 3px solid rgba(255,255,255,0.05);
     border-top-color: var(--blue);
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation: spin 0.8s linear infinite;
 }
 
 .inner-dot {
     position: absolute;
-    top: 50%; left: 50%;
-    width: 15px; height: 15px;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
     background: var(--blue);
     border-radius: 50%;
     transform: translate(-50%, -50%);
     box-shadow: 0 0 15px var(--blue);
 }
 
-.info-footer {
+.info-line {
     margin-top: 30px;
-    padding-top: 20px;
+    padding-top: 15px;
     border-top: 1px solid var(--border);
 }
 
-.info-footer p { font-size: 11px; color: #444; }
+.info-line p { font-size: 11px; color: #333; margin: 0; }
 
 @keyframes spin { to { transform: rotate(360deg); } }
 
-@media (min-height: 800px) {
-    #container { max-height: 90vh; }
+@media (max-height: 700px) {
+    #main-card { padding: 25px 20px; }
+    h1 { font-size: 22px; }
 }
