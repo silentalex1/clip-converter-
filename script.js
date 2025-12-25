@@ -1,113 +1,95 @@
-const triggerUpload = document.getElementById('trigger-upload');
-const mediaInput = document.getElementById('media-input');
-const resSelector = document.getElementById('res-selector');
-const uploadView = document.getElementById('upload-view');
-const processView = document.getElementById('process-view');
-const exportView = document.getElementById('export-view');
-const meterFill = document.getElementById('meter-fill');
-const percentVal = document.getElementById('percent-val');
-const frameVal = document.getElementById('frame-val');
-const finalPreview = document.getElementById('final-preview');
-const downloadAction = document.getElementById('download-action');
-const renderCanvas = document.getElementById('render-canvas');
-const ctx = renderCanvas.getContext('2d');
+const pickBtn = document.getElementById('pick-btn');
+const fileGet = document.getElementById('file-get');
+const sizePick = document.getElementById('size-pick');
+const startPage = document.getElementById('start-page');
+const workPage = document.getElementById('work-page');
+const donePage = document.getElementById('done-page');
+const fill = document.getElementById('fill');
+const num = document.getElementById('num');
+const viewFinal = document.getElementById('view-final');
+const saveBtn = document.getElementById('save-btn');
+const bigDraw = document.getElementById('big-draw');
+const ctx = bigDraw.getContext('2d');
 
-let masterBlob = null;
+let finalFile = null;
 
-triggerUpload.addEventListener('click', () => mediaInput.click());
+pickBtn.onclick = () => fileGet.click();
 
-mediaInput.addEventListener('change', async function() {
+fileGet.onchange = function() {
     if (this.files && this.files[0]) {
         const file = this.files[0];
-        const video = document.createElement('video');
-        video.preload = 'metadata';
-        video.src = URL.createObjectURL(file);
-        
-        video.onloadedmetadata = function() {
-            window.URL.revokeObjectURL(video.src);
-            if (video.duration > 11) {
-                alert("Please select a clip under 10 seconds.");
+        const v = document.createElement('video');
+        v.src = URL.createObjectURL(file);
+        v.onloadedmetadata = () => {
+            if (v.duration > 11) {
+                alert("Clip is too long. Keep it under 10s.");
                 return;
             }
-            beginMastering(file);
+            startFixing(file);
         };
     }
-});
+};
 
-async function beginMastering(file) {
-    uploadView.classList.remove('active');
-    processView.classList.add('active');
+async function startFixing(file) {
+    startPage.classList.remove('active');
+    workPage.classList.add('active');
 
-    const targetWidth = parseInt(resSelector.value);
-    const video = document.createElement('video');
-    video.src = URL.createObjectURL(file);
-    video.muted = true;
-    video.playsInline = true;
-    
-    await video.play();
+    const v = document.createElement('video');
+    v.src = URL.createObjectURL(file);
+    v.muted = true;
+    v.playsInline = true;
+    await v.play();
 
-    const aspect = video.videoHeight / video.videoWidth;
-    renderCanvas.width = targetWidth;
-    renderCanvas.height = targetWidth * aspect;
+    const quality = parseInt(sizePick.value);
+    const ratio = v.videoHeight / v.videoWidth;
+    bigDraw.width = quality;
+    bigDraw.height = quality * ratio;
 
-    const stream = renderCanvas.captureStream(60);
-    const recorder = new MediaRecorder(stream, {
+    const stream = bigDraw.captureStream(60);
+    const rec = new MediaRecorder(stream, {
         mimeType: 'video/webm;codecs=vp9',
-        videoBitsPerSecond: 50000000
+        videoBitsPerSecond: 100000000 
     });
 
-    const chunks = [];
-    recorder.ondataavailable = e => chunks.push(e.data);
-    recorder.onstop = () => {
-        masterBlob = new Blob(chunks, { type: 'video/quicktime' });
-        finalizeExport();
+    const bits = [];
+    rec.ondataavailable = (e) => bits.push(e.data);
+    rec.onstop = () => {
+        finalFile = new Blob(bits, { type: 'video/quicktime' });
+        showDone();
     };
 
-    recorder.start();
+    rec.start();
 
-    const duration = video.duration;
-    let frameCount = 0;
-
-    const processFrame = () => {
-        if (video.paused || video.ended) {
-            recorder.stop();
+    function draw() {
+        if (v.paused || v.ended) {
+            rec.stop();
             return;
         }
-
-        ctx.drawImage(video, 0, 0, renderCanvas.width, renderCanvas.height);
-        
-        frameCount++;
-        const progress = Math.min((video.currentTime / duration) * 100, 100);
-        
-        meterFill.style.width = `${progress}%`;
-        percentVal.innerText = `${Math.floor(progress)}%`;
-        frameVal.innerText = `Frame: ${frameCount}`;
-
-        requestAnimationFrame(processFrame);
-    };
-
-    processFrame();
+        ctx.drawImage(v, 0, 0, bigDraw.width, bigDraw.height);
+        let p = (v.currentTime / v.duration) * 100;
+        fill.style.width = p + '%';
+        num.innerText = Math.floor(p) + '%';
+        requestAnimationFrame(draw);
+    }
+    draw();
 }
 
-function finalizeExport() {
-    const url = URL.createObjectURL(masterBlob);
-    processView.classList.remove('active');
-    exportView.classList.add('active');
-    
-    finalPreview.src = url;
-    finalPreview.play();
+function showDone() {
+    const url = URL.createObjectURL(finalFile);
+    workPage.classList.remove('active');
+    donePage.classList.add('active');
+    viewFinal.src = url;
+    viewFinal.play();
 
-    downloadAction.onclick = () => {
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `LivePhoto_8K_${Date.now()}.mov`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+    saveBtn.onclick = () => {
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Live_Photo_${Date.now()}.mov`;
+        a.click();
     };
 }
 
-document.querySelectorAll('button').forEach(b => {
-    b.addEventListener('touchstart', () => b.style.transform = 'scale(0.97)');
-    b.addEventListener('touchend', () => b.style.transform = 'scale(1)');
+document.querySelectorAll('button').forEach(btn => {
+    btn.ontouchstart = () => btn.style.opacity = "0.7";
+    btn.ontouchend = () => btn.style.opacity = "1";
 });
