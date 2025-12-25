@@ -1,95 +1,105 @@
 const pickBtn = document.getElementById('pick-btn');
-const fileGet = document.getElementById('file-get');
-const sizePick = document.getElementById('size-pick');
-const startPage = document.getElementById('start-page');
-const workPage = document.getElementById('work-page');
-const donePage = document.getElementById('done-page');
+const videoFile = document.getElementById('video-file');
+const quality = document.getElementById('quality');
 const fill = document.getElementById('fill');
-const num = document.getElementById('num');
-const viewFinal = document.getElementById('view-final');
+const percentText = document.getElementById('percent');
+const frameText = document.getElementById('frame-count');
+const view = document.getElementById('view');
 const saveBtn = document.getElementById('save-btn');
-const bigDraw = document.getElementById('big-draw');
-const ctx = bigDraw.getContext('2d');
+const canvas = document.getElementById('work-canvas');
+const ctx = canvas.getContext('2d');
 
 let finalFile = null;
 
-pickBtn.onclick = () => fileGet.click();
+pickBtn.onclick = () => videoFile.click();
 
-fileGet.onchange = function() {
+videoFile.onchange = function() {
     if (this.files && this.files[0]) {
         const file = this.files[0];
-        const v = document.createElement('video');
-        v.src = URL.createObjectURL(file);
-        v.onloadedmetadata = () => {
-            if (v.duration > 11) {
-                alert("Clip is too long. Keep it under 10s.");
+        const video = document.createElement('video');
+        video.preload = 'metadata';
+        video.src = URL.createObjectURL(file);
+        
+        video.onloadedmetadata = function() {
+            window.URL.revokeObjectURL(video.src);
+            if (video.duration > 11) {
+                alert("This video is too long. Use a clip under 10 seconds.");
                 return;
             }
-            startFixing(file);
+            start(file);
         };
     }
 };
 
-async function startFixing(file) {
-    startPage.classList.remove('active');
-    workPage.classList.add('active');
+async function start(file) {
+    document.getElementById('step-1').classList.remove('active');
+    document.getElementById('step-2').classList.add('active');
 
-    const v = document.createElement('video');
-    v.src = URL.createObjectURL(file);
-    v.muted = true;
-    v.playsInline = true;
-    await v.play();
+    const width = parseInt(quality.value);
+    const video = document.createElement('video');
+    video.src = URL.createObjectURL(file);
+    video.muted = true;
+    video.playsInline = true;
+    
+    await video.play();
 
-    const quality = parseInt(sizePick.value);
-    const ratio = v.videoHeight / v.videoWidth;
-    bigDraw.width = quality;
-    bigDraw.height = quality * ratio;
+    const ratio = video.videoHeight / video.videoWidth;
+    canvas.width = width;
+    canvas.height = width * ratio;
 
-    const stream = bigDraw.captureStream(60);
-    const rec = new MediaRecorder(stream, {
+    const stream = canvas.captureStream(60);
+    const recorder = new MediaRecorder(stream, {
         mimeType: 'video/webm;codecs=vp9',
-        videoBitsPerSecond: 100000000 
+        videoBitsPerSecond: 100000000
     });
 
-    const bits = [];
-    rec.ondataavailable = (e) => bits.push(e.data);
-    rec.onstop = () => {
-        finalFile = new Blob(bits, { type: 'video/quicktime' });
-        showDone();
+    const data = [];
+    recorder.ondataavailable = e => data.push(e.data);
+    recorder.onstop = () => {
+        finalFile = new Blob(data, { type: 'video/quicktime' });
+        done();
     };
 
-    rec.start();
+    recorder.start();
+
+    let count = 0;
+    const duration = video.duration;
 
     function draw() {
-        if (v.paused || v.ended) {
-            rec.stop();
+        if (video.paused || video.ended) {
+            recorder.stop();
             return;
         }
-        ctx.drawImage(v, 0, 0, bigDraw.width, bigDraw.height);
-        let p = (v.currentTime / v.duration) * 100;
+
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        
+        count++;
+        const p = Math.min((video.currentTime / duration) * 100, 100);
+        
         fill.style.width = p + '%';
-        num.innerText = Math.floor(p) + '%';
+        percentText.innerText = Math.floor(p) + '%';
+        frameText.innerText = 'Frame ' + count;
+
         requestAnimationFrame(draw);
     }
+
     draw();
 }
 
-function showDone() {
+function done() {
     const url = URL.createObjectURL(finalFile);
-    workPage.classList.remove('active');
-    donePage.classList.add('active');
-    viewFinal.src = url;
-    viewFinal.play();
+    document.getElementById('step-2').classList.remove('active');
+    document.getElementById('step-3').classList.add('active');
+    
+    view.src = url;
+    view.play();
 
     saveBtn.onclick = () => {
         const a = document.createElement('a');
         a.href = url;
-        a.download = `Live_Photo_${Date.now()}.mov`;
+        a.download = 'LivePhoto_' + Date.now() + '.mov';
+        document.body.appendChild(a);
         a.click();
+        document.body.removeChild(a);
     };
 }
-
-document.querySelectorAll('button').forEach(btn => {
-    btn.ontouchstart = () => btn.style.opacity = "0.7";
-    btn.ontouchend = () => btn.style.opacity = "1";
-});
