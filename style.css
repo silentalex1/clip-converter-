@@ -1,76 +1,82 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
-
 body {
-    font-family: 'Inter', sans-serif;
-    -webkit-font-smoothing: antialiased;
-}
-
-.glass-panel {
-    background: rgba(17, 24, 39, 0.7);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-}
-
-.slide-out-right {
-    transform: translateX(120vw);
-    opacity: 0;
-}
-
-.fade-out {
-    opacity: 0;
-    pointer-events: none;
-}
-
-.fade-in {
-    opacity: 1;
-}
-
-#editor-section.active-editor {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f7f6;
     display: flex;
-    opacity: 1;
-    transform: translateY(0);
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: #333;
 }
 
-#controls-wrapper {
-    transition-delay: 200ms;
+#main-container {
+    text-align: center;
+    background: white;
+    padding: 3rem;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    width: 400px;
+    transition: opacity 0.5s ease;
 }
 
-.custom-scrollbar::-webkit-scrollbar {
-    width: 6px;
-}
-.custom-scrollbar::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 3px;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 3px;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.3);
+h1 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
 }
 
-@keyframes blob {
-    0% { transform: translate(0px, 0px) scale(1); }
-    33% { transform: translate(30px, -50px) scale(1.1); }
-    66% { transform: translate(-20px, 20px) scale(0.9); }
-    100% { transform: translate(0px, 0px) scale(1); }
+p {
+    color: #666;
+    margin-bottom: 2rem;
 }
 
-.animate-blob {
-    animation: blob 7s infinite;
+#upload-btn, .download-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1rem;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background 0.3s ease;
 }
 
-.animation-delay-2000 {
-    animation-delay: 2s;
+#upload-btn:hover, .download-btn:hover {
+    background-color: #0056b3;
 }
 
-input:checked ~ .bg-gray-700 {
-    background-color: #2563eb;
+.hidden {
+    display: none;
+    opacity: 0;
 }
 
-video {
-    max-height: 100%;
+.progress-bar-container {
     width: 100%;
+    background-color: #e0e0e0;
+    border-radius: 10px;
+    height: 20px;
+    margin: 20px 0;
+    overflow: hidden;
+}
+
+#progress-fill {
+    height: 100%;
+    width: 0%;
+    background-color: #28a745;
+    transition: width 0.1s linear;
+}
+
+#percentage {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.back-btn {
+    display: block;
+    margin: 20px auto 0;
+    background: none;
+    border: none;
+    color: #888;
+    text-decoration: underline;
+    cursor: pointer;
 }
