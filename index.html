@@ -5,62 +5,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Live Photo Maker</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
-    <div class="bg-fill"></div>
+    <div class="bg-gradient"></div>
     
-    <div id="box">
-        <div id="start-page" class="view active">
-            <i data-lucide="camera" class="main-icon"></i>
-            <h1>Live Photo</h1>
-            <p>Make your 10s clips look great and work as live photos.</p>
+    <div id="app">
+        <div id="step-1" class="panel active">
+            <div class="top-part">
+                <div class="dot"></div>
+                <h1>Live Photo Maker</h1>
+                <p>Turn your videos into live photos.</p>
+            </div>
 
-            <div class="menu">
-                <div class="item">
-                    <label>Video Size</label>
-                    <select id="size-pick">
-                        <option value="1080">Normal (1080p)</option>
-                        <option value="2160">High (4K)</option>
-                        <option value="4320">Best (8K)</option>
+            <div class="box">
+                <div class="row">
+                    <label>Video Quality</label>
+                    <select id="quality">
+                        <option value="1280">Standard</option>
+                        <option value="1920">HD</option>
+                        <option value="3840">4K</option>
+                        <option value="7680">8K (Max)</option>
                     </select>
                 </div>
             </div>
 
-            <input type="file" id="file-get" accept="video/*" hidden>
-            <button id="pick-btn" class="go-btn">
-                <i data-lucide="plus"></i>
-                Pick Video
-            </button>
+            <input type="file" id="video-file" accept="video/*" hidden>
+            <button id="pick-btn" class="big-btn">Choose Video</button>
+            <p class="small">Max 10 seconds</p>
         </div>
 
-        <div id="work-page" class="view">
-            <div class="spin"></div>
-            <h2>Making it better...</h2>
-            <div class="bar">
+        <div id="step-2" class="panel">
+            <div class="loader"></div>
+            <h2>Making your photo...</h2>
+            <div class="bar-container">
                 <div id="fill"></div>
             </div>
-            <div class="info">
-                <span id="num">0%</span>
+            <div class="stats">
+                <span id="percent">0%</span>
+                <span id="frame-count">Frame 0</span>
             </div>
         </div>
 
-        <div id="done-page" class="view">
-            <div class="show-video">
-                <video id="view-final" playsinline loop muted></video>
+        <div id="step-3" class="panel">
+            <div class="preview-box">
+                <video id="view" loop muted playsinline></video>
             </div>
             <h2>All Done!</h2>
-            <p>Your video is now high quality and ready to be a Live Photo.</p>
-            <button id="save-btn" class="go-btn green">
-                <i data-lucide="download"></i>
-                Save Video
-            </button>
-            <button onclick="location.reload()" class="low-btn">Start Over</button>
+            <p>Your video is ready to download.</p>
+            <button id="save-btn" class="big-btn success">Download Now</button>
+            <button onclick="location.reload()" class="link-btn">Start Over</button>
         </div>
     </div>
 
-    <canvas id="big-draw" style="display:none;"></canvas>
+    <canvas id="work-canvas" style="display:none;"></canvas>
     <script src="script.js"></script>
-    <script>lucide.createIcons();</script>
 </body>
 </html>
