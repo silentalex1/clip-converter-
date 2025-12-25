@@ -2,62 +2,73 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Live Photo Maker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Video Pro Tool</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="bg-gradient"></div>
+    <div class="bg-layer"></div>
     
-    <div id="app">
-        <div id="step-1" class="panel active">
-            <div class="top-part">
-                <div class="dot"></div>
-                <h1>Live Photo Maker</h1>
-                <p>Turn your videos into live photos.</p>
-            </div>
+    <main id="main-content">
+        <div id="start-screen" class="ui-box active">
+            <header>
+                <div class="blue-dot"></div>
+                <h1>Video Pro Tool</h1>
+                <p>Change your video quality and type easily.</p>
+            </header>
 
-            <div class="box">
-                <div class="row">
-                    <label>Video Quality</label>
-                    <select id="quality">
-                        <option value="1280">Standard</option>
-                        <option value="1920">HD</option>
-                        <option value="3840">4K</option>
-                        <option value="7680">8K (Max)</option>
+            <div class="settings">
+                <div class="set-row">
+                    <label>Video Size</label>
+                    <select id="size-pick">
+                        <option value="1280">Standard (720p)</option>
+                        <option value="1920">High (1080p)</option>
+                        <option value="3840">Ultra (4K)</option>
+                        <option value="7680">Master (8K)</option>
+                    </select>
+                </div>
+
+                <div class="set-row">
+                    <label>File Type</label>
+                    <select id="type-pick">
+                        <option value="video/mp4">MP4 File</option>
+                        <option value="video/quicktime">MOV File</option>
+                        <option value="video/webm">WebM File</option>
                     </select>
                 </div>
             </div>
 
-            <input type="file" id="video-file" accept="video/*" hidden>
-            <button id="pick-btn" class="big-btn">Choose Video</button>
-            <p class="small">Max 10 seconds</p>
+            <input type="file" id="input-field" accept="video/*" hidden>
+            <button id="pick-button" class="action-btn">Choose Video</button>
+            <p class="small-text">Works best with videos under 10 seconds.</p>
         </div>
 
-        <div id="step-2" class="panel">
-            <div class="loader"></div>
-            <h2>Making your photo...</h2>
-            <div class="bar-container">
-                <div id="fill"></div>
+        <div id="work-screen" class="ui-box">
+            <div class="spin-icon"></div>
+            <h2>Building Video...</h2>
+            <div class="meter-bg">
+                <div id="meter-bar"></div>
             </div>
-            <div class="stats">
-                <span id="percent">0%</span>
-                <span id="frame-count">Frame 0</span>
+            <div class="labels">
+                <span id="label-pc">0%</span>
+                <span id="label-fr">Frame 0</span>
             </div>
         </div>
 
-        <div id="step-3" class="panel">
-            <div class="preview-box">
-                <video id="view" loop muted playsinline></video>
+        <div id="final-screen" class="ui-box">
+            <div class="view-window">
+                <video id="output-view" loop muted playsinline></video>
             </div>
-            <h2>All Done!</h2>
-            <p>Your video is ready to download.</p>
-            <button id="save-btn" class="big-btn success">Download Now</button>
-            <button onclick="location.reload()" class="link-btn">Start Over</button>
+            <h2>Video Ready</h2>
+            <p>Your new video is ready to be saved.</p>
+            <button id="save-button" class="action-btn green">Save Video</button>
+            <button onclick="location.reload()" class="plain-btn">Start New</button>
         </div>
-    </div>
 
-    <canvas id="work-canvas" style="display:none;"></canvas>
+        <div class="bottom-spacer"></div>
+    </main>
+
+    <canvas id="hidden-canvas" style="display:none;"></canvas>
     <script src="script.js"></script>
 </body>
 </html>
