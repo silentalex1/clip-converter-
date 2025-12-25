@@ -1,20 +1,21 @@
-const pickButton = document.getElementById('pick-button');
-const inputField = document.getElementById('input-field');
-const sizePick = document.getElementById('size-pick');
-const typePick = document.getElementById('type-pick');
-const meterBar = document.getElementById('meter-bar');
-const labelPc = document.getElementById('label-pc');
-const labelFr = document.getElementById('label-fr');
+const btnPick = document.getElementById('btn-pick');
+const inputSource = document.getElementById('input-source');
+const resLevel = document.getElementById('res-level');
+const extType = document.getElementById('ext-type');
+const fillLevel = document.getElementById('fill-level');
+const labelPct = document.getElementById('label-pct');
+const labelFrame = document.getElementById('label-frame');
 const outputView = document.getElementById('output-view');
-const saveButton = document.getElementById('save-button');
-const canvas = document.getElementById('hidden-canvas');
-const ctx = canvas.getContext('2d', { alpha: false });
+const btnSave = document.getElementById('btn-save');
+const canvas = document.getElementById('engine-canvas');
+const ctx = canvas.getContext('2d');
 
-let resultData = null;
+let blobReady = null;
+let nameReady = "";
 
-pickButton.onclick = () => inputField.click();
+btnPick.onclick = () => inputSource.click();
 
-inputField.onchange = function() {
+inputSource.onchange = function() {
     if (this.files && this.files[0]) {
         const file = this.files[0];
         const video = document.createElement('video');
@@ -23,8 +24,8 @@ inputField.onchange = function() {
         
         video.onloadedmetadata = function() {
             window.URL.revokeObjectURL(video.src);
-            if (video.duration > 12) {
-                alert("Please pick a video under 10 seconds.");
+            if (video.duration > 11) {
+                alert("Please use a clip under 10 seconds.");
                 return;
             }
             process(file);
@@ -33,47 +34,47 @@ inputField.onchange = function() {
 };
 
 async function process(file) {
-    document.getElementById('start-screen').classList.remove('active');
-    document.getElementById('work-screen').classList.add('active');
+    document.getElementById('ui-start').classList.remove('active');
+    document.getElementById('ui-process').classList.add('active');
 
-    const targetWidth = parseInt(sizePick.value);
-    const mimeType = typePick.value;
-    const video = document.createElement('video');
+    const targetWidth = parseInt(resLevel.value);
+    const formatData = extType.value.split('|');
+    const mime = formatData[0];
+    const extension = formatData[1];
     
+    document.getElementById('res-badge').innerText = targetWidth >= 7680 ? "8K MASTER" : (targetWidth >= 3840 ? "4K ULTRA" : "HD QUALITY");
+
+    const video = document.createElement('video');
     video.src = URL.createObjectURL(file);
     video.muted = true;
     video.playsInline = true;
     
     await video.play();
 
-    const scale = targetWidth / video.videoWidth;
+    const scale = video.videoHeight / video.videoWidth;
     canvas.width = targetWidth;
-    canvas.height = video.videoHeight * scale;
+    canvas.height = targetWidth * scale;
 
     const stream = canvas.captureStream(60);
-    
-    let bitrate = 8000000; 
-    if (targetWidth >= 3840) bitrate = 50000000; 
-    if (targetWidth >= 7680) bitrate = 150000000;
-
     const recorder = new MediaRecorder(stream, {
-        mimeType: MediaRecorder.isTypeSupported(mimeType) ? mimeType : 'video/webm',
-        videoBitsPerSecond: bitrate
+        mimeType: MediaRecorder.isTypeSupported(mime) ? mime : 'video/webm',
+        videoBitsPerSecond: targetWidth * 15000 
     });
 
     const chunks = [];
     recorder.ondataavailable = e => chunks.push(e.data);
     recorder.onstop = () => {
-        resultData = new Blob(chunks, { type: mimeType });
+        blobReady = new Blob(chunks, { type: mime });
+        nameReady = `Converted_${targetWidth}p_${Date.now()}${extension}`;
         finish();
     };
 
     recorder.start();
 
     let frames = 0;
-    const totalTime = video.duration;
+    const dur = video.duration;
 
-    function step() {
+    function render() {
         if (video.paused || video.ended) {
             recorder.stop();
             video.pause();
@@ -83,33 +84,32 @@ async function process(file) {
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
         
         frames++;
-        const progress = Math.min((video.currentTime / totalTime) * 100, 100);
+        const prog = Math.min((video.currentTime / dur) * 100, 100);
         
-        meterBar.style.width = progress + '%';
-        labelPc.innerText = Math.floor(progress) + '%';
-        labelFr.innerText = 'Frame ' + frames;
+        fillLevel.style.width = prog + '%';
+        labelPct.innerText = Math.floor(prog) + '%';
+        labelFrame.innerText = 'Frame: ' + frames;
 
-        requestAnimationFrame(step);
+        requestAnimationFrame(render);
     }
 
-    step();
+    render();
 }
 
 function finish() {
-    const finalUrl = URL.createObjectURL(resultData);
-    document.getElementById('work-screen').classList.remove('active');
-    document.getElementById('final-screen').classList.add('active');
+    const url = URL.createObjectURL(blobReady);
+    document.getElementById('ui-process').classList.remove('active');
+    document.getElementById('ui-finish').classList.add('active');
     
-    outputView.src = finalUrl;
+    outputView.src = url;
     outputView.play();
 
-    saveButton.onclick = () => {
-        const ext = typePick.value.split('/')[1].replace('quicktime', 'mov');
-        const a = document.createElement('a');
-        a.href = finalUrl;
-        a.download = 'Video_' + Date.now() + '.' + ext;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
+    btnSave.onclick = () => {
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = nameReady;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     };
 }
