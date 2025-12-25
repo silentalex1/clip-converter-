@@ -9,76 +9,75 @@
 <body>
     <div class="bg-layer"></div>
     
-    <main id="container">
-        <div id="card">
-            <section id="page-1" class="view active">
+    <main id="view-port">
+        <div id="main-card">
+            <section id="page-1" class="screen active">
                 <header>
                     <div class="blue-dot"></div>
-                    <h1>Live Maker</h1>
-                    <p>Change your clips into high quality photos and videos.</p>
+                    <h1>Live Converter</h1>
+                    <p>Convert clips into high-quality live files.</p>
                 </header>
 
-                <div class="menu-grid">
-                    <div class="menu-item">
-                        <label>Size & Quality</label>
-                        <select id="res-pick">
-                            <option value="1280">Small (720p)</option>
-                            <option value="1920">Clear (1080p)</option>
+                <div class="settings">
+                    <div class="input-group">
+                        <label>Output Quality</label>
+                        <select id="size-pick">
+                            <option value="1280">Standard (720p)</option>
+                            <option value="1920">High (1080p)</option>
                             <option value="3840">Ultra (4K)</option>
-                            <option value="7680">Best (8K)</option>
+                            <option value="7680">Master (8K)</option>
                         </select>
                     </div>
 
-                    <div class="menu-item">
+                    <div class="input-group">
                         <label>File Type</label>
                         <select id="type-pick">
                             <option value="video/quicktime|.mov">Live Photo (.mov)</option>
-                            <option value="video/mp4|.mp4">Standard (.mp4)</option>
-                            <option value="video/webm|.webm">Web Clip (.webm)</option>
+                            <option value="video/mp4|.mp4">Standard Video (.mp4)</option>
                         </select>
                     </div>
                 </div>
 
-                <div class="btn-zone">
-                    <input type="file" id="file-in" accept="video/*" hidden>
-                    <button id="pick-btn" class="main-btn">Choose Video Clip</button>
-                    <p class="hint">Must be 10 seconds or less</p>
+                <div class="bottom-box">
+                    <input type="file" id="file-get" accept="video/*" hidden>
+                    <button id="go-btn" class="main-btn">Choose Video Clip</button>
+                    <p class="hint">Max time: 10 seconds</p>
                 </div>
 
-                <div class="info-footer">
-                    <p>This tool changes the pixels and dots in your video to make it look better on any screen.</p>
+                <div class="info-line">
+                    <p>Real-time scaling and bitrate control active.</p>
                 </div>
             </section>
 
-            <section id="page-2" class="view">
-                <div class="loading-box">
+            <section id="page-2" class="screen">
+                <div class="loading-art">
                     <div class="outer-ring"></div>
                     <div class="inner-dot"></div>
                 </div>
-                <h2>Working...</h2>
-                <div class="track-bar">
-                    <div id="fill-bar"></div>
+                <h2>Converting...</h2>
+                <div class="bar-bg">
+                    <div id="bar-move"></div>
                 </div>
-                <div class="stats">
-                    <span id="stat-pct">0%</span>
-                    <span id="stat-fr">Frame: 0</span>
+                <div class="numbers">
+                    <span id="pct-show">0%</span>
+                    <span id="fr-show">Frame 0</span>
                 </div>
             </section>
 
-            <section id="page-3" class="view">
-                <div class="preview-area">
-                    <video id="out-video" loop muted playsinline></video>
-                    <div id="tag">HIGH QUALITY</div>
+            <section id="page-3" class="screen">
+                <div class="media-box">
+                    <video id="view-final" loop muted playsinline></video>
+                    <div id="res-tag">8K</div>
                 </div>
-                <h2>Done!</h2>
-                <p>Your file is ready to save.</p>
+                <h2>Ready to Save</h2>
+                <p>Your file has been scaled and fixed.</p>
                 <button id="save-btn" class="main-btn green">Download File</button>
                 <button onclick="location.reload()" class="sub-btn">Start New</button>
             </section>
         </div>
     </main>
 
-    <canvas id="engine" style="display:none;"></canvas>
+    <canvas id="core-engine" style="display:none;"></canvas>
     <script src="script.js"></script>
 </body>
 </html>
