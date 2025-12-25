@@ -1,48 +1,48 @@
-const pickBtn = document.getElementById('pick-btn');
-const fileIn = document.getElementById('file-in');
-const resPick = document.getElementById('res-pick');
+const goBtn = document.getElementById('go-btn');
+const fileGet = document.getElementById('file-get');
+const sizePick = document.getElementById('size-pick');
 const typePick = document.getElementById('type-pick');
-const fillBar = document.getElementById('fill-bar');
-const statPct = document.getElementById('stat-pct');
-const statFr = document.getElementById('stat-fr');
-const outVideo = document.getElementById('out-video');
+const barMove = document.getElementById('bar-move');
+const pctShow = document.getElementById('pct-show');
+const frShow = document.getElementById('fr-show');
+const viewFinal = document.getElementById('view-final');
 const saveBtn = document.getElementById('save-btn');
-const canvas = document.getElementById('engine');
-const ctx = canvas.getContext('2d');
+const engine = document.getElementById('core-engine');
+const ctx = engine.getContext('2d');
 
-let savedBlob = null;
-let savedName = "";
+let outputBlob = null;
+let outputName = "";
 
-pickBtn.onclick = () => fileIn.click();
+goBtn.onclick = () => fileGet.click();
 
-fileIn.onchange = function() {
+fileGet.onchange = function() {
     if (this.files && this.files[0]) {
         const file = this.files[0];
-        const video = document.createElement('video');
-        video.preload = 'metadata';
-        video.src = URL.createObjectURL(file);
+        const v = document.createElement('video');
+        v.preload = 'metadata';
+        v.src = URL.createObjectURL(file);
         
-        video.onloadedmetadata = function() {
-            window.URL.revokeObjectURL(video.src);
-            if (video.duration > 11) {
-                alert("Please use a video that is 10 seconds or less.");
+        v.onloadedmetadata = function() {
+            window.URL.revokeObjectURL(v.src);
+            if (v.duration > 11) {
+                alert("Please use a clip under 10 seconds.");
                 return;
             }
-            runEngine(file);
+            work(file);
         };
     }
 };
 
-async function runEngine(file) {
+async function work(file) {
     document.getElementById('page-1').classList.remove('active');
     document.getElementById('page-2').classList.add('active');
 
-    const width = parseInt(resPick.value);
-    const parts = typePick.value.split('|');
-    const mime = parts[0];
-    const ext = parts[1];
+    const width = parseInt(sizePick.value);
+    const config = typePick.value.split('|');
+    const mime = config[0];
+    const ext = config[1];
     
-    document.getElementById('tag').innerText = width >= 7680 ? "8K BEST" : (width >= 3840 ? "4K ULTRA" : "HD QUALITY");
+    document.getElementById('res-tag').innerText = width >= 7680 ? "8K" : (width >= 3840 ? "4K" : "HD");
 
     const video = document.createElement('video');
     video.src = URL.createObjectURL(file);
@@ -51,64 +51,64 @@ async function runEngine(file) {
     
     await video.play();
 
-    const ratio = video.videoHeight / video.videoWidth;
-    canvas.width = width;
-    canvas.height = width * ratio;
+    const scale = video.videoHeight / video.videoWidth;
+    engine.width = width;
+    engine.height = width * scale;
 
-    const stream = canvas.captureStream(60);
+    const stream = engine.captureStream(60);
     const recorder = new MediaRecorder(stream, {
         mimeType: MediaRecorder.isTypeSupported(mime) ? mime : 'video/webm',
-        videoBitsPerSecond: width * 15000 
+        videoBitsPerSecond: width * 18000 
     });
 
-    const chunks = [];
-    recorder.ondataavailable = e => chunks.push(e.data);
+    const parts = [];
+    recorder.ondataavailable = e => parts.push(e.data);
     recorder.onstop = () => {
-        savedBlob = new Blob(chunks, { type: mime });
-        savedName = `LiveMaker_${width}p_${Date.now()}${ext}`;
-        showOut();
+        outputBlob = new Blob(parts, { type: mime });
+        outputName = `Live_${width}p_${Date.now()}${ext}`;
+        done();
     };
 
     recorder.start();
 
-    let frame = 0;
-    const dur = video.duration;
+    let frames = 0;
+    const total = video.duration;
 
-    function paint() {
+    function frame() {
         if (video.paused || video.ended) {
             recorder.stop();
             return;
         }
 
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        ctx.drawImage(video, 0, 0, engine.width, engine.height);
         
-        frame++;
-        const p = Math.min((video.currentTime / dur) * 100, 100);
+        frames++;
+        const p = Math.min((video.currentTime / total) * 100, 100);
         
-        fillBar.style.width = p + '%';
-        statPct.innerText = Math.floor(p) + '%';
-        statFr.innerText = 'Frame: ' + frame;
+        barMove.style.width = p + '%';
+        pctShow.innerText = Math.floor(p) + '%';
+        frShow.innerText = 'Frame ' + frames;
 
-        requestAnimationFrame(paint);
+        requestAnimationFrame(frame);
     }
 
-    paint();
+    frame();
 }
 
-function showOut() {
-    const url = URL.createObjectURL(savedBlob);
+function done() {
+    const url = URL.createObjectURL(outputBlob);
     document.getElementById('page-2').classList.remove('active');
     document.getElementById('page-3').classList.add('active');
     
-    outVideo.src = url;
-    outVideo.play();
+    viewFinal.src = url;
+    viewFinal.play();
 
     saveBtn.onclick = () => {
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = savedName;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = outputName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
     };
 }
