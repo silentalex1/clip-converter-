@@ -1,129 +1,61 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const introLayer = document.getElementById('intro-layer');
-    const introIcon = document.getElementById('intro-icon');
-    const mainInterface = document.getElementById('main-interface');
-    
-    const uploadSection = document.getElementById('upload-section');
-    const chooseBtn = document.getElementById('choose-clip-btn');
-    const fileInput = document.getElementById('file-input');
-    
-    const loadingContainer = document.getElementById('loading-container');
-    const progressBar = document.getElementById('progress-bar');
-    const progressText = document.getElementById('progress-text');
-    
-    const editorSection = document.getElementById('editor-section');
-    const userVideo = document.getElementById('user-video');
-    const downloadBtn = document.getElementById('download-btn');
-    const btnText = document.getElementById('btn-text');
-    const formatSelect = document.getElementById('format-select');
-    const videoWrapper = document.getElementById('video-wrapper');
+const uploadBtn = document.getElementById('upload-btn');
+const videoInput = document.getElementById('video-input');
+const uploadSection = document.getElementById('upload-section');
+const loadingSection = document.getElementById('loading-section');
+const resultSection = document.getElementById('result-section');
+const progressFill = document.getElementById('progress-fill');
+const percentageText = document.getElementById('percentage');
 
-    let selectedFile = null;
-
-    setTimeout(() => {
-        introIcon.classList.add('slide-out-right');
-        
-        setTimeout(() => {
-            introLayer.classList.add('fade-out');
-            mainInterface.classList.remove('opacity-0');
-            mainInterface.classList.add('fade-in');
-            
-            setTimeout(() => {
-                introLayer.style.display = 'none';
-            }, 800);
-        }, 600);
-    }, 1000);
-
-    chooseBtn.addEventListener('click', () => {
-        fileInput.click();
-    });
-
-    fileInput.addEventListener('change', (e) => {
-        if (e.target.files && e.target.files[0]) {
-            selectedFile = e.target.files[0];
-            startProcessingAnimation();
-        }
-    });
-
-    function startProcessingAnimation() {
-        uploadSection.style.display = 'none';
-        loadingContainer.classList.remove('hidden');
-        loadingContainer.classList.add('flex');
-        
-        let width = 0;
-        
-        const fastInterval = setInterval(() => {
-            const increment = Math.random() * 8 + 2; 
-            width += increment;
-            
-            if (width >= 100) {
-                width = 100;
-                clearInterval(fastInterval);
-                finishLoading();
-            }
-            
-            progressBar.style.width = width + '%';
-            progressText.innerText = Math.floor(width) + '%';
-        }, 80);
-    }
-
-    function finishLoading() {
-        setTimeout(() => {
-            loadingContainer.style.opacity = '0';
-            loadingContainer.style.transform = 'translateY(-20px)';
-            loadingContainer.style.transition = 'all 0.5s ease';
-            
-            setTimeout(() => {
-                loadingContainer.style.display = 'none';
-                showEditor();
-            }, 500);
-        }, 300);
-    }
-
-    function showEditor() {
-        editorSection.classList.remove('hidden');
-        editorSection.classList.add('flex');
-        
-        const fileURL = URL.createObjectURL(selectedFile);
-        userVideo.src = fileURL;
-        userVideo.load();
-        
-        setTimeout(() => {
-            editorSection.classList.add('active-editor');
-            videoWrapper.classList.add('animate-fade-in-up');
-        }, 50);
-    }
-
-    downloadBtn.addEventListener('click', () => {
-        if (!selectedFile) return;
-
-        const originalText = btnText.innerText;
-        btnText.innerText = "Encoding...";
-        downloadBtn.disabled = true;
-        downloadBtn.classList.add('opacity-75', 'cursor-not-allowed');
-
-        setTimeout(() => {
-            const originalName = selectedFile.name.split('.')[0];
-            const newExtension = formatSelect.value;
-            const newFileName = `${originalName}_converted.${newExtension}`;
-
-            const a = document.createElement('a');
-            a.href = userVideo.src; 
-            a.download = newFileName;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            
-            btnText.innerText = "Saved!";
-            downloadBtn.classList.remove('from-blue-600', 'to-indigo-600');
-            downloadBtn.classList.add('from-green-500', 'to-emerald-600');
-            
-            setTimeout(() => {
-                btnText.innerText = originalText;
-                downloadBtn.disabled = false;
-                downloadBtn.classList.remove('opacity-75', 'cursor-not-allowed', 'from-green-500', 'to-emerald-600');
-                downloadBtn.classList.add('from-blue-600', 'to-indigo-600');
-            }, 3000);
-        }, 1500);
-    });
+uploadBtn.addEventListener('click', () => {
+    videoInput.click();
 });
+
+videoInput.addEventListener('change', function() {
+    if (this.files && this.files[0]) {
+        const file = this.files[0];
+        const video = document.createElement('video');
+        video.preload = 'metadata';
+
+        video.onloadedmetadata = function() {
+            window.URL.revokeObjectURL(video.src);
+            if (video.duration > 10.5) {
+                alert("Please select a video shorter than 10 seconds.");
+                return;
+            }
+            startConversion();
+        };
+        video.src = URL.createObjectURL(file);
+    }
+});
+
+function startConversion() {
+    uploadSection.style.opacity = '0';
+    
+    setTimeout(() => {
+        uploadSection.classList.add('hidden');
+        loadingSection.classList.remove('hidden');
+        loadingSection.style.opacity = '1';
+        
+        let progress = 0;
+        const interval = setInterval(() => {
+            progress += 1;
+            progressFill.style.width = progress + '%';
+            percentageText.innerText = progress + '%';
+
+            if (progress >= 100) {
+                clearInterval(interval);
+                showResults();
+            }
+        }, 50); 
+    }, 500);
+}
+
+function showResults() {
+    loadingSection.style.opacity = '0';
+    
+    setTimeout(() => {
+        loadingSection.classList.add('hidden');
+        resultSection.classList.remove('hidden');
+        resultSection.style.opacity = '1';
+    }, 500);
+}
