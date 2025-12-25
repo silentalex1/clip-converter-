@@ -2,139 +2,34 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ClipConverter</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clip Converter</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-gray-950 text-white min-h-screen w-full flex items-center justify-center font-sans overflow-x-hidden selection:bg-blue-500 selection:text-white">
+<body>
 
-    <div class="fixed inset-0 z-0 opacity-30 pointer-events-none">
-        <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-blue-600 rounded-full blur-[120px] mix-blend-screen animate-blob"></div>
-        <div class="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-purple-600 rounded-full blur-[120px] mix-blend-screen animate-blob animation-delay-2000"></div>
-    </div>
-
-    <div id="intro-layer" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-950 transition-opacity duration-1000">
-        <div id="intro-icon" class="w-20 h-20 md:w-32 md:h-32 text-blue-500 transition-all duration-1000 ease-[cubic-bezier(0.87,0,0.13,1)]">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-full h-full drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z" />
-            </svg>
-        </div>
-    </div>
-
-    <div id="main-interface" class="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center justify-center opacity-0 transition-opacity duration-1000 p-4 md:p-6 lg:h-[85vh]">
-        
-        <div id="upload-section" class="flex flex-col items-center justify-center w-full h-full transition-all duration-700 min-h-[50vh]">
-            <div class="glass-panel p-10 rounded-3xl flex flex-col items-center text-center max-w-md w-full border border-gray-800 hover:border-blue-500/50 transition-colors duration-500">
-                <div class="mb-6 p-4 bg-blue-500/10 rounded-full text-blue-400">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
-                    </svg>
-                </div>
-                <h2 class="text-2xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">Upload Media</h2>
-                <p class="text-gray-400 text-sm mb-8">Unlimited size. All formats supported.</p>
-                <input type="file" id="file-input" class="hidden" accept="video/*,image/*">
-                <button id="choose-clip-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 px-8 rounded-xl text-lg shadow-lg shadow-blue-600/20 transform transition hover:-translate-y-1 hover:shadow-blue-600/40 active:translate-y-0">
-                    Choose Clip
-                </button>
-            </div>
+    <div id="main-container">
+        <div id="upload-section">
+            <h1>Clip Converter</h1>
+            <p>Convert your video clips.</p>
+            <input type="file" id="video-input" accept="video/*" hidden>
+            <button id="upload-btn">Select Video (Max 10s)</button>
         </div>
 
-        <div id="loading-container" class="w-full max-w-md hidden flex-col items-center justify-center min-h-[50vh]">
-            <div class="w-full glass-panel p-8 rounded-2xl border border-gray-800">
-                <div class="flex justify-between mb-4 items-end">
-                    <div class="flex flex-col">
-                        <span class="text-xs text-gray-400 uppercase tracking-wider mb-1">Status</span>
-                        <span class="text-lg font-bold text-blue-400 animate-pulse">Processing Media...</span>
-                    </div>
-                    <span id="progress-text" class="text-3xl font-bold text-white tabular-nums">0%</span>
-                </div>
-                <div class="w-full bg-gray-800 rounded-full h-3 overflow-hidden p-[2px]">
-                    <div id="progress-bar" class="bg-gradient-to-r from-blue-500 to-purple-500 h-full rounded-full transition-all duration-150 ease-out shadow-[0_0_10px_rgba(59,130,246,0.5)]" style="width: 0%"></div>
-                </div>
-                <p class="mt-4 text-xs text-center text-gray-500">Optimizing logic and preparing preview...</p>
+        <div id="loading-section" class="hidden">
+            <h2>Processing your clip...</h2>
+            <div class="progress-bar-container">
+                <div id="progress-fill"></div>
             </div>
+            <p id="percentage">0%</p>
         </div>
 
-        <div id="editor-section" class="hidden w-full flex-col lg:flex-row gap-6 lg:gap-8 transition-all duration-1000 transform translate-y-10 opacity-0 h-full pb-10 lg:pb-0">
-            
-            <div id="video-wrapper" class="w-full lg:w-2/3 flex items-center justify-center bg-black/40 backdrop-blur-md rounded-3xl shadow-2xl border border-gray-800 overflow-hidden relative group h-[40vh] lg:h-auto min-h-[300px]">
-                <video id="user-video" class="w-full h-full object-contain" controls playsinline></video>
-                <div class="absolute inset-0 pointer-events-none shadow-[inset_0_0_100px_rgba(0,0,0,0.5)]"></div>
-            </div>
-
-            <div id="controls-wrapper" class="w-full lg:w-1/3 flex flex-col gap-4 lg:gap-6 p-6 glass-panel rounded-3xl border border-gray-800 h-fit lg:h-auto lg:overflow-y-auto custom-scrollbar">
-                
-                <div class="flex items-center gap-3 pb-4 border-b border-gray-800">
-                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white shadow-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
-                        </svg>
-                    </div>
-                    <div>
-                        <h2 class="text-xl font-bold text-white">Enhance & Export</h2>
-                        <p class="text-xs text-gray-400">Customize your output</p>
-                    </div>
-                </div>
-
-                <div class="space-y-4">
-                    <div class="bg-gray-800/50 p-4 rounded-xl border border-gray-700/50 hover:border-blue-500/30 transition-colors">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="font-semibold text-sm flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-green-400"></span> No Lag
-                            </span>
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" class="sr-only peer">
-                                <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                            </label>
-                        </div>
-                        <p class="text-xs text-gray-500">Stabilizes frame rate for smoother playback.</p>
-                    </div>
-
-                    <div class="bg-gray-800/50 p-4 rounded-xl border border-gray-700/50 hover:border-blue-500/30 transition-colors">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="font-semibold text-sm flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-purple-400"></span> Noise Removal
-                            </span>
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" class="sr-only peer">
-                                <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                            </label>
-                        </div>
-                        <p class="text-xs text-gray-500">AI-powered audio cleaning.</p>
-                    </div>
-                </div>
-
-                <div class="flex flex-col gap-2 mt-2">
-                    <label class="font-semibold text-sm text-gray-300">Target Format</label>
-                    <div class="relative group">
-                        <select id="format-select" class="block appearance-none w-full bg-gray-800/50 border border-gray-700 text-white py-4 px-4 pr-8 rounded-xl leading-tight focus:outline-none focus:bg-gray-800 focus:border-blue-500 transition-all cursor-pointer">
-                            <option value="mp4">MP4 (Universal)</option>
-                            <option value="mov">MOV (High Quality)</option>
-                            <option value="avi">AVI (Uncompressed)</option>
-                            <option value="webm">WEBM (Web Ready)</option>
-                            <option value="mkv">MKV (Matroska)</option>
-                            <option value="gif">GIF (Animation)</option>
-                            <option value="mp3">MP3 (Audio Only)</option>
-                        </select>
-                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-blue-500 transition-transform group-hover:translate-x-1">
-                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mt-auto pt-6">
-                    <button id="download-btn" class="relative overflow-hidden w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-4 rounded-xl shadow-[0_10px_20px_-5px_rgba(79,70,229,0.4)] transform transition active:scale-[0.98] flex items-center justify-center gap-3 group">
-                        <span class="absolute inset-0 w-full h-full bg-white/20 -translate-x-full group-hover:translate-x-0 transition-transform duration-300 skew-x-12"></span>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 animate-bounce">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                        </svg>
-                        <span id="btn-text">Download Clip</span>
-                    </button>
-                </div>
-            </div>
+        <div id="result-section" class="hidden">
+            <h2>Conversion Complete!</h2>
+            <p>Your video has been enhanced to the highest quality and converted to a Live Photo.</p>
+            <button class="download-btn">Download Live Photo</button>
+            <button onclick="location.reload()" class="back-btn">Convert Another</button>
         </div>
-
     </div>
 
     <script src="script.js"></script>
