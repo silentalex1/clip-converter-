@@ -1,21 +1,21 @@
-const btnPick = document.getElementById('btn-pick');
-const inputSource = document.getElementById('input-source');
-const resLevel = document.getElementById('res-level');
-const extType = document.getElementById('ext-type');
-const fillLevel = document.getElementById('fill-level');
-const labelPct = document.getElementById('label-pct');
-const labelFrame = document.getElementById('label-frame');
-const outputView = document.getElementById('output-view');
-const btnSave = document.getElementById('btn-save');
-const canvas = document.getElementById('engine-canvas');
+const pickBtn = document.getElementById('pick-btn');
+const fileIn = document.getElementById('file-in');
+const resPick = document.getElementById('res-pick');
+const typePick = document.getElementById('type-pick');
+const fillBar = document.getElementById('fill-bar');
+const statPct = document.getElementById('stat-pct');
+const statFr = document.getElementById('stat-fr');
+const outVideo = document.getElementById('out-video');
+const saveBtn = document.getElementById('save-btn');
+const canvas = document.getElementById('engine');
 const ctx = canvas.getContext('2d');
 
-let blobReady = null;
-let nameReady = "";
+let savedBlob = null;
+let savedName = "";
 
-btnPick.onclick = () => inputSource.click();
+pickBtn.onclick = () => fileIn.click();
 
-inputSource.onchange = function() {
+fileIn.onchange = function() {
     if (this.files && this.files[0]) {
         const file = this.files[0];
         const video = document.createElement('video');
@@ -25,24 +25,24 @@ inputSource.onchange = function() {
         video.onloadedmetadata = function() {
             window.URL.revokeObjectURL(video.src);
             if (video.duration > 11) {
-                alert("Please use a clip under 10 seconds.");
+                alert("Please use a video that is 10 seconds or less.");
                 return;
             }
-            process(file);
+            runEngine(file);
         };
     }
 };
 
-async function process(file) {
-    document.getElementById('ui-start').classList.remove('active');
-    document.getElementById('ui-process').classList.add('active');
+async function runEngine(file) {
+    document.getElementById('page-1').classList.remove('active');
+    document.getElementById('page-2').classList.add('active');
 
-    const targetWidth = parseInt(resLevel.value);
-    const formatData = extType.value.split('|');
-    const mime = formatData[0];
-    const extension = formatData[1];
+    const width = parseInt(resPick.value);
+    const parts = typePick.value.split('|');
+    const mime = parts[0];
+    const ext = parts[1];
     
-    document.getElementById('res-badge').innerText = targetWidth >= 7680 ? "8K MASTER" : (targetWidth >= 3840 ? "4K ULTRA" : "HD QUALITY");
+    document.getElementById('tag').innerText = width >= 7680 ? "8K BEST" : (width >= 3840 ? "4K ULTRA" : "HD QUALITY");
 
     const video = document.createElement('video');
     video.src = URL.createObjectURL(file);
@@ -51,63 +51,62 @@ async function process(file) {
     
     await video.play();
 
-    const scale = video.videoHeight / video.videoWidth;
-    canvas.width = targetWidth;
-    canvas.height = targetWidth * scale;
+    const ratio = video.videoHeight / video.videoWidth;
+    canvas.width = width;
+    canvas.height = width * ratio;
 
     const stream = canvas.captureStream(60);
     const recorder = new MediaRecorder(stream, {
         mimeType: MediaRecorder.isTypeSupported(mime) ? mime : 'video/webm',
-        videoBitsPerSecond: targetWidth * 15000 
+        videoBitsPerSecond: width * 15000 
     });
 
     const chunks = [];
     recorder.ondataavailable = e => chunks.push(e.data);
     recorder.onstop = () => {
-        blobReady = new Blob(chunks, { type: mime });
-        nameReady = `Converted_${targetWidth}p_${Date.now()}${extension}`;
-        finish();
+        savedBlob = new Blob(chunks, { type: mime });
+        savedName = `LiveMaker_${width}p_${Date.now()}${ext}`;
+        showOut();
     };
 
     recorder.start();
 
-    let frames = 0;
+    let frame = 0;
     const dur = video.duration;
 
-    function render() {
+    function paint() {
         if (video.paused || video.ended) {
             recorder.stop();
-            video.pause();
             return;
         }
 
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
         
-        frames++;
-        const prog = Math.min((video.currentTime / dur) * 100, 100);
+        frame++;
+        const p = Math.min((video.currentTime / dur) * 100, 100);
         
-        fillLevel.style.width = prog + '%';
-        labelPct.innerText = Math.floor(prog) + '%';
-        labelFrame.innerText = 'Frame: ' + frames;
+        fillBar.style.width = p + '%';
+        statPct.innerText = Math.floor(p) + '%';
+        statFr.innerText = 'Frame: ' + frame;
 
-        requestAnimationFrame(render);
+        requestAnimationFrame(paint);
     }
 
-    render();
+    paint();
 }
 
-function finish() {
-    const url = URL.createObjectURL(blobReady);
-    document.getElementById('ui-process').classList.remove('active');
-    document.getElementById('ui-finish').classList.add('active');
+function showOut() {
+    const url = URL.createObjectURL(savedBlob);
+    document.getElementById('page-2').classList.remove('active');
+    document.getElementById('page-3').classList.add('active');
     
-    outputView.src = url;
-    outputView.play();
+    outVideo.src = url;
+    outVideo.play();
 
-    btnSave.onclick = () => {
+    saveBtn.onclick = () => {
         const link = document.createElement('a');
         link.href = url;
-        link.download = nameReady;
+        link.download = savedName;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
