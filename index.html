@@ -2,79 +2,64 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Live8K | Pro Video Converter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Live Photo Maker</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
-    <div class="app-background"></div>
+    <div class="bg-fill"></div>
     
-    <main id="app-shell">
-        <section id="upload-view" class="step-card active">
-            <header>
-                <div class="brand-badge">PRO</div>
-                <i data-lucide="layers" class="hero-icon"></i>
-                <h1>Live8K</h1>
-                <p>Master-grade Live Photo conversion with up to 8K resolution scaling.</p>
-            </header>
+    <div id="box">
+        <div id="start-page" class="view active">
+            <i data-lucide="camera" class="main-icon"></i>
+            <h1>Live Photo</h1>
+            <p>Make your 10s clips look great and work as live photos.</p>
 
-            <div class="control-panel">
-                <div class="setting-item">
-                    <label>Target Resolution</label>
-                    <select id="res-selector">
-                        <option value="1920">1080p Full HD</option>
-                        <option value="3840">4K Ultra HD</option>
-                        <option value="7680">8K Master Quality</option>
-                    </select>
-                </div>
-                <div class="setting-item">
-                    <label>Output Format</label>
-                    <select id="format-selector">
-                        <option value="live">Live Photo (MOV)</option>
-                        <option value="high-mp4">ProRes Equivalent (MP4)</option>
+            <div class="menu">
+                <div class="item">
+                    <label>Video Size</label>
+                    <select id="size-pick">
+                        <option value="1080">Normal (1080p)</option>
+                        <option value="2160">High (4K)</option>
+                        <option value="4320">Best (8K)</option>
                     </select>
                 </div>
             </div>
 
-            <input type="file" id="media-input" accept="video/*" hidden>
-            <button id="trigger-upload" class="main-action">
-                <i data-lucide="plus-circle"></i>
-                <span>Import Clip</span>
+            <input type="file" id="file-get" accept="video/*" hidden>
+            <button id="pick-btn" class="go-btn">
+                <i data-lucide="plus"></i>
+                Pick Video
             </button>
-            <footer class="input-info">Supports clips up to 10s</footer>
-        </section>
+        </div>
 
-        <section id="process-view" class="step-card">
-            <div class="processing-orb">
-                <div class="inner-pulse"></div>
+        <div id="work-page" class="view">
+            <div class="spin"></div>
+            <h2>Making it better...</h2>
+            <div class="bar">
+                <div id="fill"></div>
             </div>
-            <h2 id="status-label">Initializing Engine</h2>
-            <div class="meter-container">
-                <div id="meter-fill"></div>
+            <div class="info">
+                <span id="num">0%</span>
             </div>
-            <div class="stat-row">
-                <span id="percent-val">0%</span>
-                <span id="frame-val">Frame: 0</span>
-            </div>
-        </section>
+        </div>
 
-        <section id="export-view" class="step-card">
-            <div class="preview-stage">
-                <video id="final-preview" playsinline loop muted></video>
-                <div class="quality-tag">8K ENHANCED</div>
+        <div id="done-page" class="view">
+            <div class="show-video">
+                <video id="view-final" playsinline loop muted></video>
             </div>
-            <h2>Conversion Ready</h2>
-            <p>Your media has been upscaled and metadata optimized for Live Photo playback.</p>
-            <button id="download-action" class="main-action success">
+            <h2>All Done!</h2>
+            <p>Your video is now high quality and ready to be a Live Photo.</p>
+            <button id="save-btn" class="go-btn green">
                 <i data-lucide="download"></i>
-                <span>Save to Photos</span>
+                Save Video
             </button>
-            <button onclick="location.reload()" class="ghost-action">New Project</button>
-        </section>
-    </main>
+            <button onclick="location.reload()" class="low-btn">Start Over</button>
+        </div>
+    </div>
 
-    <canvas id="render-canvas" style="display:none;"></canvas>
+    <canvas id="big-draw" style="display:none;"></canvas>
     <script src="script.js"></script>
     <script>lucide.createIcons();</script>
 </body>
